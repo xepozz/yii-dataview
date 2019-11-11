@@ -8,15 +8,15 @@
 
 namespace Yiisoft\Yii\DataView\Tests;
 
-use yii\base\Model;
-use Yiisoft\Yii\DataView\DetailView;
 use Yiisoft\Arrays\ArrayableInterface;
 use Yiisoft\Arrays\ArrayableTrait;
+use Yiisoft\Tests\TestCase;
+use Yiisoft\Yii\DataView\DetailView;
 
 /**
  * @group widgets
  */
-class DetailViewTest extends \yii\tests\TestCase
+class DetailViewTest extends TestCase
 {
     /** @var DetailView */
     public $detailView;

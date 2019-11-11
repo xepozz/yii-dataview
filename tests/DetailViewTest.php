@@ -21,13 +21,6 @@ class DetailViewTest extends \yii\tests\TestCase
     /** @var DetailView */
     public $detailView;
 
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->mockWebApplication();
-    }
-
     public function testAttributeValue()
     {
         $model = new ModelMock();

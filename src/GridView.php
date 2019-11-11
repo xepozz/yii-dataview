@@ -267,7 +267,7 @@ class GridView extends BaseListView
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
-    public function __construct(MessageFormatterInterface $formatter)
+    public function __construct(MessageFormatterInterface $messageFormatter)
     {
         $this->messageFormatter = $messageFormatter;
         parent::__construct($messageFormatter);

@@ -152,7 +152,7 @@ class GridView extends BaseListView
     /**
      * @var \Yiisoft\I18n\MessageFormatterInterface the formatter used to format model attribute values into displayable texts.
      */
-    public $formatter;
+    public $messageFormatter;
     /**
      * @var array grid column configuration. Each array element represents the configuration
      *            for one particular grid column. For example,
@@ -269,7 +269,8 @@ class GridView extends BaseListView
 
     public function __construct(MessageFormatterInterface $formatter)
     {
-        $this->formatter = $formatter;
+        $this->messageFormatter = $messageFormatter;
+        parent::__construct($messageFormatter);
     }
 
     /**

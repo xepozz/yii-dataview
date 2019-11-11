@@ -111,7 +111,7 @@ abstract class BaseListView extends Widget
     /**
      * @var \Yiisoft\I18n\MessageFormatterInterface
      */
-    private $formatter;
+    private $messageFormatter;
 
     /**
      * Renders the data models.
@@ -120,9 +120,9 @@ abstract class BaseListView extends Widget
      */
     abstract public function renderItems();
 
-    public function __construct(MessageFormatterInterface $formatter)
+    public function __construct(MessageFormatterInterface $messageFormatter)
     {
-        $this->formatter = $formatter;
+        $this->messageFormatter = $messageFormatter;
     }
 
     /**
@@ -250,7 +250,10 @@ abstract class BaseListView extends Widget
             }
         }
 
-        return $this->formatter->format($summaryContent, [
+        // TODO fix that
+        $language = 'language';
+
+        return $this->messageFormatter->format($summaryContent, [
             'begin'      => $begin,
             'end'        => $end,
             'count'      => $count,

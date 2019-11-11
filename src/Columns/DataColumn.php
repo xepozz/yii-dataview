@@ -214,8 +214,8 @@ class DataColumn extends Column
                 $options = array_merge(['prompt' => ''], $filterOptions);
 
                 return Html::activeDropDownList($model, $this->attribute, [
-                    1 => $this->grid->formatter->booleanFormat[1],
-                    0 => $this->grid->formatter->booleanFormat[0],
+                        1 => $this->grid->messageFormatter->booleanFormat[1],
+                        0 => $this->grid->messageFormatter->booleanFormat[0],
                 ], $options).$error;
             }
 
@@ -254,7 +254,7 @@ class DataColumn extends Column
     protected function renderDataCellContent($model, $key, $index)
     {
         if ($this->content === null) {
-            return $this->grid->formatter->format($this->getDataCellValue($model, $key, $index), $this->format);
+            return $this->grid->messageFormatter->format($this->getDataCellValue($model, $key, $index), $this->format);
         }
 
         return parent::renderDataCellContent($model, $key, $index);

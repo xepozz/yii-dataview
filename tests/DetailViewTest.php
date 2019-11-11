@@ -362,7 +362,7 @@ class ArrayableInterfaceMock implements ArrayableInterface
 /**
  * Helper Class.
  */
-class ModelMock extends Model
+class ModelMock
 {
     public $id;
     public $text;
@@ -396,7 +396,7 @@ class ModelMock extends Model
 /**
  * Used for testing attributes containing non-English characters.
  */
-class UnicodeAttributesModelMock extends Model
+class UnicodeAttributesModelMock
 {
     /**
      * Product's ID (Russian).

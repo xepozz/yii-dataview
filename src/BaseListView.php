@@ -290,7 +290,7 @@ abstract class BaseListView
     public function renderSorter()
     {
         $sort = $this->dataProvider->getSort();
-        if ($sort === false || empty($sort->attributes) || $this->dataProvider->getCount() <= 0) {
+        if ($sort === null || empty($sort->getCriteria()) || $this->dataProvider->count() <= 0) {
             return '';
         }
         /* @var $class LinkSorter */

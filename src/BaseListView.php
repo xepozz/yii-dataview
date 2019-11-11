@@ -8,11 +8,11 @@
 
 namespace Yiisoft\Yii\DataView;
 
-use Yiisoft\Factory\Exceptions\InvalidConfigException;
-use Yiisoft\Html\Html;
 use yii\helpers\Yii;
 use yii\widgets\LinkPager;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
+use Yiisoft\Html\Html;
 use Yiisoft\I18n\MessageFormatterInterface;
 
 /**

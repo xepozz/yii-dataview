@@ -12,7 +12,6 @@ use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use yii\helpers\Yii;
 use yii\widgets\LinkPager;
-use yii\widgets\Widget;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\I18n\MessageFormatterInterface;
 
@@ -28,7 +27,7 @@ use Yiisoft\I18n\MessageFormatterInterface;
  *
  * @since 2.0
  */
-abstract class BaseListView extends Widget
+abstract class BaseListView
 {
     /**
      * @var array the HTML attributes for the container tag of the list view.

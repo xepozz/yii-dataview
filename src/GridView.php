@@ -318,6 +318,7 @@ class GridView extends BaseListView
      * Renders the data models for the grid view.
      *
      * @return string the HTML code of table
+     * @throws \JsonException
      */
     public function renderItems()
     {
@@ -451,6 +452,7 @@ class GridView extends BaseListView
      * Renders the table body.
      *
      * @return string the rendering result.
+     * @throws \JsonException
      */
     public function renderTableBody()
     {
@@ -489,10 +491,10 @@ class GridView extends BaseListView
      * Renders a table row with the given data model and key.
      *
      * @param mixed $model the data model to be rendered
-     * @param mixed $key   the key associated with the data model
-     * @param int   $index the zero-based index of the data model among the model array returned by [[dataProvider]].
-     *
+     * @param mixed $key the key associated with the data model
+     * @param int $index the zero-based index of the data model among the model array returned by [[dataProvider]].
      * @return string the rendering result
+     * @throws \JsonException
      */
     public function renderTableRow($model, $key, $index)
     {

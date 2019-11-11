@@ -37,7 +37,7 @@ abstract class BaseListView
      */
     public $options = [];
     /**
-     * @var \yii\data\DataProviderInterface the data provider for the view. This property is required.
+     * @var \Yiisoft\Data\Reader\Iterable\IterableDataReader the data provider for the view. This property is required.
      */
     public $dataProvider;
     /**
@@ -146,7 +146,7 @@ abstract class BaseListView
      */
     public function run()
     {
-        if ($this->showOnEmpty || $this->dataProvider->getCount() > 0) {
+        if ($this->showOnEmpty || $this->dataProvider->count() > 0) {
             $content = preg_replace_callback('/{\\w+}/', function ($matches) {
                 $content = $this->renderSection($matches[0]);
 
@@ -259,7 +259,7 @@ abstract class BaseListView
             'totalCount' => $totalCount,
             'page'       => $page,
             'pageCount'  => $pageCount,
-        ], Yii::getApp()->language);
+        ], $language);
     }
 
     /**

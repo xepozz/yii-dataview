@@ -10,11 +10,12 @@ namespace Yiisoft\Yii\DataView;
 
 use Closure;
 use yii\base\Model;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use Yiisoft\I18n\MessageFormatterInterface;
+use Yiisoft\Json\Json;
+use Yiisoft\Yii\DataView\Columns\Column;
 use Yiisoft\Yii\DataView\Columns\DataColumn;
-use Yiisoft\Factory\Exceptions\InvalidConfigException;
-use yii\helpers\Yii;
 
 /**
  * The GridView widget is used to display data in a grid.
@@ -508,7 +509,7 @@ class GridView extends BaseListView
         } else {
             $options = $this->rowOptions;
         }
-        $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
+        $options['data-key'] = is_array($key) ? Json::encode($key) : (string) $key;
 
         return Html::tag('tr', implode('', $cells), $options);
     }

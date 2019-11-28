@@ -18,12 +18,6 @@ use Yiisoft\Yii\DataView\ListView;
  */
 class ListViewTest extends TestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->mockApplication();
-    }
-
     public function testEmptyListShown()
     {
         $out = $this->getListView([

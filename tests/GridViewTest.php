@@ -21,12 +21,6 @@ use Yiisoft\Yii\DataView\GridView;
  */
 class GridViewTest extends TestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->mockApplication();
-    }
-
     /**
      * @return array
      */

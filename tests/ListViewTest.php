@@ -8,10 +8,10 @@
 
 namespace Yiisoft\Yii\DataView\Tests;
 
+use PHPUnit\Framework\TestCase;
 use yii\data\ArrayDataProvider;
 use yii\data\DataProviderInterface;
 use Yiisoft\Yii\DataView\ListView;
-use yii\tests\TestCase;
 
 /**
  * @group widgets

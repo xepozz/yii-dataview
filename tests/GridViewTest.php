@@ -8,17 +8,18 @@
 
 namespace Yiisoft\Yii\DataView\Tests;
 
+use PHPUnit\Framework\TestCase;
 use yii\data\ArrayDataProvider;
-use Yiisoft\Yii\DataView\Columns\DataColumn;
-use Yiisoft\Yii\DataView\GridView;
 use yii\helpers\Yii;
 use yii\web\View;
+use Yiisoft\Yii\DataView\Columns\DataColumn;
+use Yiisoft\Yii\DataView\GridView;
 
 /**
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
  * @group grid
  */
-class GridViewTest extends \yii\tests\TestCase
+class GridViewTest extends TestCase
 {
     protected function setUp()
     {

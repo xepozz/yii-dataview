@@ -8,15 +8,16 @@
 
 namespace Yiisoft\Yii\DataView\Tests\Coolumns;
 
-use Yiisoft\Yii\DataView\Columns\ActionColumn;
+use PHPUnit\Framework\TestCase;
 use yii\helpers\Yii;
+use Yiisoft\Yii\DataView\Columns\ActionColumn;
 
 /**
  * @author Vitaly S. <fornit1917@gmail.com>
  *
  * @group grid
  */
-class ActionColumnTest extends \yii\tests\TestCase
+class ActionColumnTest extends TestCase
 {
     public function testInit()
     {

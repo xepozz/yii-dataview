@@ -8,9 +8,9 @@
 
 namespace Yiisoft\Yii\DataView\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Yiisoft\Arrays\ArrayableInterface;
 use Yiisoft\Arrays\ArrayableTrait;
-use Yiisoft\Tests\TestCase;
 use Yiisoft\Yii\DataView\DetailView;
 
 /**

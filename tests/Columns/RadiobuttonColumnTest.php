@@ -8,13 +8,13 @@
 
 namespace Yiisoft\Yii\DataView\Tests\Coolumns;
 
+use PHPUnit\Framework\TestCase;
 use yii\data\ArrayDataProvider;
+use yii\helpers\Yii;
+use yii\web\Request;
+use Yiisoft\Html\Html;
 use Yiisoft\Yii\DataView\Columns\RadioButtonColumn;
 use Yiisoft\Yii\DataView\GridView;
-use Yiisoft\Html\Html;
-use yii\helpers\Yii;
-use yii\tests\TestCase;
-use yii\web\Request;
 
 /**
  * Class RadiobuttonColumnTest.

@@ -8,14 +8,14 @@
 
 namespace Yiisoft\Yii\DataView\Tests\Coolumns;
 
+use PHPUnit\Framework\TestCase;
 use yii\data\ArrayDataProvider;
-use Yiisoft\Yii\DataView\Columns\CheckboxColumn;
-use Yiisoft\Yii\DataView\GridView;
 use yii\helpers\FileHelper;
-use Yiisoft\Html\Html;
 use yii\helpers\Yii;
 use yii\tests\framework\i18n\IntlTestHelper;
-use yii\tests\TestCase;
+use Yiisoft\Html\Html;
+use Yiisoft\Yii\DataView\Columns\CheckboxColumn;
+use Yiisoft\Yii\DataView\GridView;
 
 /**
  * @group grid

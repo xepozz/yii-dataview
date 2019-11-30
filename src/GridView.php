@@ -457,8 +457,8 @@ class GridView extends BaseListView
      */
     public function renderTableBody()
     {
-        $models = array_values($this->dataProvider->getModels());
-        $keys = $this->dataProvider->getKeys();
+        $models = array_values($this->dataReader->getModels());
+        $keys = $this->dataReader->getKeys();
         $rows = [];
         foreach ($models as $index => $model) {
             $key = $keys[$index];
@@ -569,7 +569,7 @@ class GridView extends BaseListView
      */
     protected function guessColumns()
     {
-        $models = $this->dataProvider->getModels();
+        $models = $this->dataReader->getModels();
         $model = reset($models);
         if (is_array($model) || is_object($model)) {
             foreach ($model as $name => $value) {

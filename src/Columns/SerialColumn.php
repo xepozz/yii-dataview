@@ -41,7 +41,7 @@ class SerialColumn extends Column
      */
     protected function renderDataCellContent($model, $key, $index)
     {
-        $pagination = $this->grid->dataProvider->getPagination();
+        $pagination = $this->grid->dataReader->getPagination();
         if ($pagination !== false) {
             return $pagination->getOffset() + $index + 1;
         }

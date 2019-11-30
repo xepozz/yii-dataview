@@ -12,9 +12,9 @@ use Closure;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
+use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Db\ActiveQueryInterface;
 use Yiisoft\Html\Html;
-use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Strings\Inflector;
 
 /**
@@ -140,7 +140,7 @@ class DataColumn extends Column
         }
 
         if ($this->attribute !== null && $this->enableSorting &&
-            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+            ($sort = $this->grid->dataReader->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
             return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
         }
 
@@ -154,7 +154,7 @@ class DataColumn extends Column
      */
     protected function getHeaderCellLabel()
     {
-        $provider = $this->grid->dataProvider;
+        $provider = $this->grid->dateReader;
 
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {

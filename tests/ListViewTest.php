@@ -11,6 +11,9 @@ namespace Yiisoft\Yii\DataView\Tests;
 use PHPUnit\Framework\TestCase;
 use yii\data\ArrayDataProvider;
 use yii\data\DataProviderInterface;
+use Yiisoft\Data\Paginator\OffsetPaginator;
+use Yiisoft\Data\Reader\Iterable\IterableDataReader;
+use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\Yii\DataView\ListView;
 
 /**
@@ -20,20 +23,18 @@ class ListViewTest extends TestCase
 {
     public function testEmptyListShown()
     {
+        $dataProvider = $this->createDataProvider([]);
         $out = $this->getListView([
-            'dataProvider' => $this->app->createObject([
-                '__class'   => ArrayDataProvider::class,
-                'allModels' => [],
-            ]),
+            'dataProvider' => $dataProvider,
             'emptyText' => 'Nothing at all',
         ])->run();
-        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
+        $this->assertEquals('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
     }
 
     public function testEmpty()
     {
         $out = $this->getListView([
-            'dataProvider' => $this->app->createObject([
+            'dataProvider' => $this->createObject([
                 '__class'   => ArrayDataProvider::class,
                 'allModels' => [],
             ]),
@@ -46,7 +47,7 @@ class ListViewTest extends TestCase
     public function testEmptyListNotShown()
     {
         $out = $this->getListView([
-            'dataProvider' => $this->app->createObject([
+            'dataProvider' => $this->createObject([
                 '__class'   => ArrayDataProvider::class,
                 'allModels' => [],
             ]),
@@ -68,21 +69,21 @@ HTML
      */
     private function getListView($options = [])
     {
-        return $this->app->createObject(array_merge([
-            '__class'      => ListView::class,
-            'id'           => 'w0',
-            'dataProvider' => $this->getDataProvider(),
-        ], $options));
+        $messageFormatter = $this->createMock(MessageFormatterInterface::class);
+        $listView = new ListView($messageFormatter);
+        $listView->dateReader = $this->getDataProvider();
+//        $listView->id = 'w0';
+
+        return  $listView;
     }
 
     /**
-     * @return DataProviderInterface
+     * @return \Yiisoft\Data\Reader\Iterable\Processor\IterableProcessorInterface
      */
     private function getDataProvider()
     {
-        return $this->app->createObject([
-            '__class'   => ArrayDataProvider::class,
-            'allModels' => [
+        return $this->createDataProvider([
+            [
                 ['id' => 1, 'login' => 'silverfire'],
                 ['id' => 2, 'login' => 'samdark'],
                 ['id' => 3, 'login' => 'cebe'],
@@ -252,11 +253,16 @@ HTML
             'on widget.init' => function () use (&$initTriggered) {
                 $initTriggered = true;
             },
-            'dataProvider' => $this->app->createObject([
+            'dataProvider' => $this->createObject([
                 '__class'   => ArrayDataProvider::class,
                 'allModels' => [],
             ]),
         ]);
         $this->assertTrue($initTriggered);
+    }
+
+    private function createDataProvider(array $models)
+    {
+        return new OffsetPaginator(new IterableDataReader($models));
     }
 }

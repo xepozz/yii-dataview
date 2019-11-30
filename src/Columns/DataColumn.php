@@ -154,7 +154,7 @@ class DataColumn extends Column
      */
     protected function getHeaderCellLabel()
     {
-        $provider = $this->grid->dateReader;
+        $provider = $this->grid->dataReader;
 
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {

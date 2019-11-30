@@ -71,7 +71,7 @@ HTML
     {
         $messageFormatter = $this->createMock(MessageFormatterInterface::class);
         $listView = new ListView($messageFormatter);
-        $listView->dateReader = $this->getDataProvider();
+        $listView->dataReader = $this->getDataProvider();
 //        $listView->id = 'w0';
 
         return  $listView;

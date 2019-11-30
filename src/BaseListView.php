@@ -147,7 +147,7 @@ abstract class BaseListView
      */
     public function run()
     {
-        if ($this->showOnEmpty || $this->dateReader->count() > 0) {
+        if ($this->showOnEmpty || $this->dataReader->count() > 0) {
             $content = preg_replace_callback('/{\\w+}/', function ($matches) {
                 $content = $this->renderSection($matches[0]);
 
@@ -270,8 +270,8 @@ abstract class BaseListView
      */
     public function renderPager()
     {
-        $pagination = $this->dateReader->getPagination();
-        if ($pagination === false || $this->dateReader->getCount() <= 0) {
+        $pagination = $this->dataReader->getPagination();
+        if ($pagination === false || $this->dataReader->getCount() <= 0) {
             return '';
         }
         /* @var $class LinkPager */
@@ -291,7 +291,7 @@ abstract class BaseListView
     public function renderSorter()
     {
         $sort = $this->dataReader->getSort();
-        if ($sort === null || empty($sort->getCriteria()) || $this->dateReader->count() <= 0) {
+        if ($sort === null || empty($sort->getCriteria()) || $this->dataReader->count() <= 0) {
             return '';
         }
         /* @var $class LinkSorter */

@@ -135,7 +135,7 @@ abstract class BaseListView
             throw new InvalidConfigException('The "dataReader" property must be set.');
         }
         if ($this->emptyText === null) {
-            $this->emptyText = Yii::t('yii', 'No results found.');
+            $this->emptyText = 'No results found.';
         }
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
@@ -214,6 +214,9 @@ abstract class BaseListView
         if ($count <= 0) {
             return '';
         }
+        // TODO fix that
+        $language = 'language';
+
         $summaryOptions = $this->summaryOptions;
         $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
         if (($pagination = $this->dataReader->getPagination()) !== false) {
@@ -226,32 +229,29 @@ abstract class BaseListView
             $page = $pagination->getPage() + 1;
             $pageCount = $pagination->pageCount;
             if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, Yii::t('yii', 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
+                return Html::tag($tag, $this->messageFormatter->format('Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
                         'begin'      => $begin,
                         'end'        => $end,
                         'count'      => $count,
                         'totalCount' => $totalCount,
                         'page'       => $page,
                         'pageCount'  => $pageCount,
-                    ]), $summaryOptions);
+                    ], $language), $summaryOptions);
             }
         } else {
             $begin = $page = $pageCount = 1;
             $end = $totalCount = $count;
             if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, Yii::t('yii', 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
+                return Html::tag($tag, $this->messageFormatter->format('Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
                     'begin'      => $begin,
                     'end'        => $end,
                     'count'      => $count,
                     'totalCount' => $totalCount,
                     'page'       => $page,
                     'pageCount'  => $pageCount,
-                ]), $summaryOptions);
+                ], $language), $summaryOptions);
             }
         }
-
-        // TODO fix that
-        $language = 'language';
 
         return $this->messageFormatter->format($summaryContent, [
             'begin'      => $begin,

@@ -116,20 +116,20 @@ class DetailViewTest extends TestCase
                 ],
                 [
                     'attribute' => 'id',
-                    'value'     => function ($model) {
+                    'value'     => function (ModelMock $model) {
                         return $model->getDisplayedId();
                     },
                 ],
                 [
                     'attribute' => 'id',
-                    'value'     => function ($model) {
+                    'value'     => function (ModelMock $model) {
                         return $model->getDisplayedId();
                     },
                     'visible' => false,
                 ],
                 [
                     'attribute' => 'id',
-                    'value'     => function ($model) {
+                    'value'     => function (ModelMock $model) {
                         return $model->getDisplayedId();
                     },
                     'visible' => true,

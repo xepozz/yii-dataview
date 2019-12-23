@@ -8,13 +8,11 @@
 
 namespace Yiisoft\Yii\DataView;
 
-use yii\base\Model;
-use Yiisoft\Factory\Exceptions\InvalidConfigException;
-use Yiisoft\Html\Html;
 use yii\helpers\Yii;
-use yii\widgets\Widget;
 use Yiisoft\Arrays\ArrayableInterface;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
+use Yiisoft\Html\Html;
 use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\Strings\Inflector;
 
@@ -51,7 +49,7 @@ use Yiisoft\Strings\Inflector;
  *
  * @since 2.0
  */
-class DetailView extends Widget
+class DetailView
 {
     /**
      * @var array|object the data model whose details are to be displayed. This can be a [[Model]] instance,

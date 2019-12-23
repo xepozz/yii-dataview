@@ -23,9 +23,10 @@ class ListViewTest extends TestCase
 {
     public function testEmptyListShown()
     {
-        $dataProvider = $this->createDataProvider([]);
+        $dataReader = $this->createDataProvider([]);
         $out = $this->getListView([
-            'dataProvider' => $dataProvider,
+            'dataReader' => $dataReader,
+            'paginator' => new OffsetPaginator($dataReader),
             'emptyText' => 'Nothing at all',
         ])->run();
         $this->assertEquals('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
@@ -71,10 +72,12 @@ HTML
     {
         $messageFormatter = $this->createMock(MessageFormatterInterface::class);
         $listView = new ListView($messageFormatter);
-        $listView->dataReader = $this->getDataProvider();
-//        $listView->id = 'w0';
+        $listView->dataReader = $options['dataReader'];
+        $listView->paginator = $options['paginator'];
+        $listView->emptyText = $options['emptyText'];
+        $listView->options = ['id' => 'w0', 'class' => 'list-view'];
 
-        return  $listView;
+        return $listView;
     }
 
     /**
@@ -263,6 +266,6 @@ HTML
 
     private function createDataProvider(array $models)
     {
-        return new OffsetPaginator(new IterableDataReader($models));
+        return new IterableDataReader($models);
     }
 }

@@ -8,14 +8,19 @@
 
 namespace Yiisoft\Yii\DataView;
 
-use Yiisoft\Factory\Exceptions\InvalidConfigException;
-use Yiisoft\Html\Html;
 use yii\helpers\Yii;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Data\Reader\CountableDataInterface;
+use Yiisoft\Data\Reader\DataReaderInterface;
+use Yiisoft\Data\Reader\FilterableDataInterface;
+use Yiisoft\Data\Reader\OffsetableDataInterface;
+use Yiisoft\Data\Reader\SortableDataInterface;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
+use Yiisoft\Html\Html;
+use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\View\ViewContextInterface;
 use Yiisoft\Widget\LinkPager;
 use Yiisoft\Widget\LinkSorter;
-use Yiisoft\I18n\MessageFormatterInterface;
 
 /**
  * BaseListView is a base class for widgets displaying data from data provider
@@ -39,9 +44,13 @@ abstract class BaseListView
      */
     public $options = [];
     /**
-     * @var \Yiisoft\Data\Paginator\PaginatorInterface the data provider for the view. This property is required.
+     * @var DataReaderInterface|SortableDataInterface|FilterableDataInterface|OffsetableDataInterface|CountableDataInterface the data provider for the view. This property is required.
      */
     public $dataReader;
+    /**
+     * @var \Yiisoft\Data\Paginator\PaginatorInterface
+     */
+    public $paginator;
     /**
      * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
      *            used to render the pager. You can use a different widget class by configuring the "class" element.
@@ -91,7 +100,7 @@ abstract class BaseListView
      * @see showOnEmpty
      * @see emptyTextOptions
      */
-    public $emptyText;
+    public $emptyText = '';
     /**
      * @var array the HTML attributes for the emptyText of the list view.
      *            The "tag" element specifies the tag name of the emptyText element and defaults to "div".
@@ -219,7 +228,7 @@ abstract class BaseListView
 
         $summaryOptions = $this->summaryOptions;
         $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
-        if (($pagination = $this->dataReader->getPagination()) !== false) {
+        if (($pagination = $this->paginator) !== false) {
             $totalCount = $this->dataReader->count();
             $begin = $pagination->getPage() * $pagination->pageSize + 1;
             $end = $begin + $count - 1;

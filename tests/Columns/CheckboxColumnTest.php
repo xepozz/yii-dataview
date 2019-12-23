@@ -11,7 +11,6 @@ namespace Yiisoft\Yii\DataView\Tests\Coolumns;
 use PHPUnit\Framework\TestCase;
 use yii\data\ArrayDataProvider;
 use yii\helpers\FileHelper;
-use Yiisoft\Html\Html;
 use yii\helpers\Yii;
 use yii\tests\framework\i18n\IntlTestHelper;
 use Yiisoft\Html\Html;

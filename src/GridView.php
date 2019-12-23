@@ -10,10 +10,12 @@ namespace Yiisoft\Yii\DataView;
 
 use Closure;
 use yii\base\Model;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use Yiisoft\I18n\MessageFormatterInterface;
+use Yiisoft\Json\Json;
+use Yiisoft\Yii\DataView\Columns\Column;
 use Yiisoft\Yii\DataView\Columns\DataColumn;
-use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use yii\helpers\Yii;
 
 /**
@@ -152,7 +154,7 @@ class GridView extends BaseListView
     /**
      * @var \Yiisoft\I18n\MessageFormatterInterface the formatter used to format model attribute values into displayable texts.
      */
-    public $formatter;
+    public $messageFormatter;
     /**
      * @var array grid column configuration. Each array element represents the configuration
      *            for one particular grid column. For example,
@@ -267,9 +269,9 @@ class GridView extends BaseListView
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
-    public function __construct(MessageFormatterInterface $formatter)
+    public function __construct(MessageFormatterInterface $messageFormatter)
     {
-        $this->formatter = $formatter;
+        parent::__construct($messageFormatter);
     }
 
     /**
@@ -317,6 +319,7 @@ class GridView extends BaseListView
      * Renders the data models for the grid view.
      *
      * @return string the HTML code of table
+     * @throws \JsonException
      */
     public function renderItems()
     {
@@ -450,11 +453,12 @@ class GridView extends BaseListView
      * Renders the table body.
      *
      * @return string the rendering result.
+     * @throws \JsonException
      */
     public function renderTableBody()
     {
-        $models = array_values($this->dataProvider->getModels());
-        $keys = $this->dataProvider->getKeys();
+        $models = array_values($this->dataReader->getModels());
+        $keys = $this->dataReader->getKeys();
         $rows = [];
         foreach ($models as $index => $model) {
             $key = $keys[$index];
@@ -488,10 +492,10 @@ class GridView extends BaseListView
      * Renders a table row with the given data model and key.
      *
      * @param mixed $model the data model to be rendered
-     * @param mixed $key   the key associated with the data model
-     * @param int   $index the zero-based index of the data model among the model array returned by [[dataProvider]].
-     *
+     * @param mixed $key the key associated with the data model
+     * @param int $index the zero-based index of the data model among the model array returned by [[dataProvider]].
      * @return string the rendering result
+     * @throws \JsonException
      */
     public function renderTableRow($model, $key, $index)
     {
@@ -505,7 +509,7 @@ class GridView extends BaseListView
         } else {
             $options = $this->rowOptions;
         }
-        $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
+        $options['data-key'] = is_array($key) ? Json::encode($key) : (string) $key;
 
         return Html::tag('tr', implode('', $cells), $options);
     }
@@ -565,7 +569,7 @@ class GridView extends BaseListView
      */
     protected function guessColumns()
     {
-        $models = $this->dataProvider->getModels();
+        $models = $this->dataReader->getModels();
         $model = reset($models);
         if (is_array($model) || is_object($model)) {
             foreach ($model as $name => $value) {

@@ -132,8 +132,6 @@ class DetailView extends Widget
      */
     public function init(): void
     {
-        parent::init();
-
         if ($this->model === null) {
             throw new InvalidConfigException('Please specify the "model" property.');
         }

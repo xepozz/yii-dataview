@@ -8,25 +8,18 @@
 
 namespace Yiisoft\Yii\DataView\Tests;
 
-use yii\base\Model;
-use Yiisoft\Yii\DataView\DetailView;
+use PHPUnit\Framework\TestCase;
 use Yiisoft\Arrays\ArrayableInterface;
 use Yiisoft\Arrays\ArrayableTrait;
+use Yiisoft\Yii\DataView\DetailView;
 
 /**
  * @group widgets
  */
-class DetailViewTest extends \yii\tests\TestCase
+class DetailViewTest extends TestCase
 {
     /** @var DetailView */
     public $detailView;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->mockWebApplication();
-    }
 
     public function testAttributeValue()
     {
@@ -362,7 +355,7 @@ class ArrayableInterfaceMock implements ArrayableInterface
 /**
  * Helper Class.
  */
-class ModelMock extends Model
+class ModelMock
 {
     public $id;
     public $text;
@@ -396,7 +389,7 @@ class ModelMock extends Model
 /**
  * Used for testing attributes containing non-English characters.
  */
-class UnicodeAttributesModelMock extends Model
+class UnicodeAttributesModelMock
 {
     /**
      * Product's ID (Russian).

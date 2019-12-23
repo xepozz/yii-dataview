@@ -11,9 +11,10 @@ namespace Yiisoft\Yii\DataView;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use yii\helpers\Yii;
-use yii\widgets\LinkPager;
-use yii\widgets\Widget;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\View\ViewContextInterface;
+use Yiisoft\Widget\LinkPager;
+use Yiisoft\Widget\LinkSorter;
 use Yiisoft\I18n\MessageFormatterInterface;
 
 /**
@@ -28,7 +29,7 @@ use Yiisoft\I18n\MessageFormatterInterface;
  *
  * @since 2.0
  */
-abstract class BaseListView extends Widget
+abstract class BaseListView
 {
     /**
      * @var array the HTML attributes for the container tag of the list view.
@@ -38,21 +39,21 @@ abstract class BaseListView extends Widget
      */
     public $options = [];
     /**
-     * @var \yii\data\DataProviderInterface the data provider for the view. This property is required.
+     * @var \Yiisoft\Data\Paginator\PaginatorInterface the data provider for the view. This property is required.
      */
-    public $dataProvider;
+    public $dataReader;
     /**
      * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
      *            used to render the pager. You can use a different widget class by configuring the "class" element.
      *            Note that the widget must support the `pagination` property which will be populated with the
-     *            [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataProvider]] and will overwrite this value.
+     *            [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataReader]] and will overwrite this value.
      */
     public $pager = [];
     /**
      * @var array the configuration for the sorter widget. By default, [[LinkSorter]] will be
      *            used to render the sorter. You can use a different widget class by configuring the "class" element.
      *            Note that the widget must support the `sort` property which will be populated with the
-     *            [[\yii\data\BaseDataProvider::sort|sort]] value of the [[dataProvider]] and will overwrite this value.
+     *            [[\yii\data\BaseDataProvider::sort|sort]] value of the [[dataReader]] and will overwrite this value.
      */
     public $sorter = [];
     /**
@@ -77,13 +78,13 @@ abstract class BaseListView extends Widget
      */
     public $summaryOptions = ['class' => 'summary'];
     /**
-     * @var bool whether to show an empty list view if [[dataProvider]] returns no data.
+     * @var bool whether to show an empty list view if [[dataReader]] returns no data.
      *           The default value is false which displays an element according to the [[emptyText]]
      *           and [[emptyTextOptions]] properties.
      */
     public $showOnEmpty = false;
     /**
-     * @var string|false the HTML content to be displayed when [[dataProvider]] does not have any data.
+     * @var string|false the HTML content to be displayed when [[dataReader]] does not have any data.
      *                   When this is set to `false` no extra HTML content will be generated.
      *                   The default value is the text "No results found." which will be translated to the current application language.
      *
@@ -111,7 +112,7 @@ abstract class BaseListView extends Widget
     /**
      * @var \Yiisoft\I18n\MessageFormatterInterface
      */
-    private $formatter;
+    private $messageFormatter;
 
     /**
      * Renders the data models.
@@ -120,9 +121,9 @@ abstract class BaseListView extends Widget
      */
     abstract public function renderItems();
 
-    public function __construct(MessageFormatterInterface $formatter)
+    public function __construct(MessageFormatterInterface $messageFormatter)
     {
-        $this->formatter = $formatter;
+        $this->messageFormatter = $messageFormatter;
     }
 
     /**
@@ -130,12 +131,11 @@ abstract class BaseListView extends Widget
      */
     public function init(): void
     {
-        parent::init();
-        if ($this->dataProvider === null) {
-            throw new InvalidConfigException('The "dataProvider" property must be set.');
+        if ($this->dataReader === null) {
+            throw new InvalidConfigException('The "dataReader" property must be set.');
         }
         if ($this->emptyText === null) {
-            $this->emptyText = Yii::t('yii', 'No results found.');
+            $this->emptyText = 'No results found.';
         }
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
@@ -147,7 +147,7 @@ abstract class BaseListView extends Widget
      */
     public function run()
     {
-        if ($this->showOnEmpty || $this->dataProvider->getCount() > 0) {
+        if ($this->showOnEmpty || $this->dataReader->count() > 0) {
             $content = preg_replace_callback('/{\\w+}/', function ($matches) {
                 $content = $this->renderSection($matches[0]);
 
@@ -210,14 +210,17 @@ abstract class BaseListView extends Widget
      */
     public function renderSummary()
     {
-        $count = $this->dataProvider->getCount();
+        $count = $this->dataReader->count();
         if ($count <= 0) {
             return '';
         }
+        // TODO fix that
+        $language = 'language';
+
         $summaryOptions = $this->summaryOptions;
         $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
-        if (($pagination = $this->dataProvider->getPagination()) !== false) {
-            $totalCount = $this->dataProvider->getTotalCount();
+        if (($pagination = $this->dataReader->getPagination()) !== false) {
+            $totalCount = $this->dataReader->count();
             $begin = $pagination->getPage() * $pagination->pageSize + 1;
             $end = $begin + $count - 1;
             if ($begin > $end) {
@@ -226,38 +229,38 @@ abstract class BaseListView extends Widget
             $page = $pagination->getPage() + 1;
             $pageCount = $pagination->pageCount;
             if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, Yii::t('yii', 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
+                return Html::tag($tag, $this->messageFormatter->format('Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
                         'begin'      => $begin,
                         'end'        => $end,
                         'count'      => $count,
                         'totalCount' => $totalCount,
                         'page'       => $page,
                         'pageCount'  => $pageCount,
-                    ]), $summaryOptions);
+                    ], $language), $summaryOptions);
             }
         } else {
             $begin = $page = $pageCount = 1;
             $end = $totalCount = $count;
             if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, Yii::t('yii', 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
+                return Html::tag($tag, $this->messageFormatter->format('Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
                     'begin'      => $begin,
                     'end'        => $end,
                     'count'      => $count,
                     'totalCount' => $totalCount,
                     'page'       => $page,
                     'pageCount'  => $pageCount,
-                ]), $summaryOptions);
+                ], $language), $summaryOptions);
             }
         }
 
-        return $this->formatter->format($summaryContent, [
+        return $this->messageFormatter->format($summaryContent, [
             'begin'      => $begin,
             'end'        => $end,
             'count'      => $count,
             'totalCount' => $totalCount,
             'page'       => $page,
             'pageCount'  => $pageCount,
-        ], Yii::getApp()->language);
+        ], $language);
     }
 
     /**
@@ -267,8 +270,8 @@ abstract class BaseListView extends Widget
      */
     public function renderPager()
     {
-        $pagination = $this->dataProvider->getPagination();
-        if ($pagination === false || $this->dataProvider->getCount() <= 0) {
+        $pagination = $this->dataReader->getPagination();
+        if ($pagination === false || $this->dataReader->getCount() <= 0) {
             return '';
         }
         /* @var $class LinkPager */
@@ -287,16 +290,35 @@ abstract class BaseListView extends Widget
      */
     public function renderSorter()
     {
-        $sort = $this->dataProvider->getSort();
-        if ($sort === false || empty($sort->attributes) || $this->dataProvider->getCount() <= 0) {
+        $sort = $this->dataReader->getSort();
+        if ($sort === null || empty($sort->getCriteria()) || $this->dataReader->count() <= 0) {
             return '';
         }
         /* @var $class LinkSorter */
         $sorter = $this->sorter;
-        $class = ArrayHelper::remove($sorter, '__class', LinkSorter::class);
+        ArrayHelper::remove($sorter, '__class', LinkSorter::class);
         $sorter['sort'] = $sort;
         $sorter['view'] = $this->getView();
 
-        return $class::widget($sorter);
+        return $sorter::widget();
+    }
+
+//    abstract public function getId();
+    public function getId()
+    {
+        return rand(1, 10);
+    }
+
+//    abstract public function getView(): ViewContextInterface;
+    public function getView(): ViewContextInterface{
+        return new class implements ViewContextInterface{
+            /**
+             * @inheritDoc
+             */
+            public function getViewPath(): string
+            {
+                return 'path/////////.php';
+            }
+        };
     }
 }

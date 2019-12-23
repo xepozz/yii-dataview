@@ -12,9 +12,9 @@ use Closure;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
+use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Db\ActiveQueryInterface;
 use Yiisoft\Html\Html;
-use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Strings\Inflector;
 
 /**
@@ -140,7 +140,7 @@ class DataColumn extends Column
         }
 
         if ($this->attribute !== null && $this->enableSorting &&
-            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+            ($sort = $this->grid->dataReader->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
             return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
         }
 
@@ -154,7 +154,7 @@ class DataColumn extends Column
      */
     protected function getHeaderCellLabel()
     {
-        $provider = $this->grid->dataProvider;
+        $provider = $this->grid->dataReader;
 
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
@@ -214,8 +214,8 @@ class DataColumn extends Column
                 $options = array_merge(['prompt' => ''], $filterOptions);
 
                 return Html::activeDropDownList($model, $this->attribute, [
-                    1 => $this->grid->formatter->booleanFormat[1],
-                    0 => $this->grid->formatter->booleanFormat[0],
+                        1 => $this->grid->messageFormatter->booleanFormat[1],
+                        0 => $this->grid->messageFormatter->booleanFormat[0],
                 ], $options).$error;
             }
 
@@ -254,7 +254,7 @@ class DataColumn extends Column
     protected function renderDataCellContent($model, $key, $index)
     {
         if ($this->content === null) {
-            return $this->grid->formatter->format($this->getDataCellValue($model, $key, $index), $this->format);
+            return $this->grid->messageFormatter->format($this->getDataCellValue($model, $key, $index), $this->format);
         }
 
         return parent::renderDataCellContent($model, $key, $index);

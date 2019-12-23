@@ -9,8 +9,8 @@
 namespace Yiisoft\Yii\DataView;
 
 use Closure;
-use Yiisoft\Html\Html;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Html\Html;
 
 /**
  * The ListView widget is used to display data from data
@@ -118,8 +118,8 @@ class ListView extends BaseListView
      */
     public function renderItems()
     {
-        $models = $this->dataReader->getModels();
-        $keys = $this->dataReader->getKeys();
+        $models = $this->dataReader->read();
+        $keys = array_keys($models);
         $rows = [];
         foreach (array_values($models) as $index => $model) {
             $key = $keys[$index];

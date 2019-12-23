@@ -23,7 +23,7 @@ use Yiisoft\Widget\Widget;
 class LinkPager extends Widget
 {
     /**
-     * @var \Yiisoft\Data\Paginator\OffsetPaginator the pagination object that this pager is associated with.
+     * @var \Yiisoft\Data\Paginator\PaginatorInterface the pagination object that this pager is associated with.
      *                 You must set this property in order to make LinkPager work.
      */
     public $paginator;
@@ -173,18 +173,20 @@ class LinkPager extends Widget
      */
     protected function renderPageButtons()
     {
-        $pageCount = $this->paginator->getTotalPages();
+        $paginator = $this->paginator;
+        $pageCount = 10;//$paginator->getCurrentPageSize();
         if ($pageCount < 2 && $this->hideOnSinglePage) {
             return '';
         }
 
         $buttons = [];
-        $currentPage = $this->paginator->getCurrentPage();
+        $currentPage = 1;// $paginator->getCurrentPage();
 
         // first page
         $firstPageLabel = $this->firstPageLabel === true ? '1' : $this->firstPageLabel;
         if ($firstPageLabel !== false) {
-            $buttons[] = $this->renderPageButton($firstPageLabel, 0, $this->firstPageCssClass, $currentPage <= 0, false);
+            $disabled = $paginator->isOnFirstPage() || $paginator->withPreviousPageToken(null)->isOnFirstPage();
+            $buttons[] = $this->renderPageButton($firstPageLabel, 0, $this->firstPageCssClass, $disabled, false);
         }
 
         // prev page
@@ -192,27 +194,31 @@ class LinkPager extends Widget
             if (($page = $currentPage - 1) < 0) {
                 $page = 0;
             }
-            $buttons[] = $this->renderPageButton($this->prevPageLabel, $page, $this->prevPageCssClass, $currentPage <= 0, false);
+            $disabled = $paginator->isOnFirstPage() || $paginator->withPreviousPageToken(null)->isOnFirstPage();
+            $buttons[] = $this->renderPageButton($this->prevPageLabel, $page, $this->prevPageCssClass, $disabled, false);
         }
 
         // internal pages
         [$beginPage, $endPage] = $this->getPageRange();
         for ($i = $beginPage; $i <= $endPage; $i++) {
-            $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
+            $disabled = $paginator->isOnLastPage() || $paginator->withNextPageToken(null)->isOnLastPage();
+            $buttons[] = $this->renderPageButton($i + 1, $i, null, $disabled, $i == $currentPage);
         }
 
         // next page
         if ($this->nextPageLabel !== false) {
-            if (($page = $currentPage + 1) >= $pageCount - 1) {
-                $page = $pageCount - 1;
-            }
-            $buttons[] = $this->renderPageButton($this->nextPageLabel, $page, $this->nextPageCssClass, $currentPage >= $pageCount - 1, false);
+//            if (($page = $currentPage + 1) >= $pageCount - 1) {
+//                $page = $pageCount - 1;
+//            }
+            $disabled = $paginator->isOnLastPage() || $paginator->withNextPageToken(null)->isOnLastPage();
+            $buttons[] = $this->renderPageButton($this->nextPageLabel, $page, $this->nextPageCssClass, $disabled, false);
         }
 
         // last page
         $lastPageLabel = $this->lastPageLabel === true ? $pageCount : $this->lastPageLabel;
         if ($lastPageLabel !== false) {
-            $buttons[] = $this->renderPageButton($lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
+            $disabled = $paginator->isOnLastPage() || $paginator->withNextPageToken(null)->isOnLastPage();
+            $buttons[] = $this->renderPageButton($lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $disabled, false);
         }
 
         $options = $this->options;

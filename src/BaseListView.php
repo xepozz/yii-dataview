@@ -19,8 +19,8 @@ use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\View\ViewContextInterface;
-use Yiisoft\Widget\LinkPager;
-use Yiisoft\Widget\LinkSorter;
+use Yiisoft\Yii\DataView\Widget\LinkPager;
+use Yiisoft\Yii\DataView\Widget\LinkSorter;
 
 /**
  * BaseListView is a base class for widgets displaying data from data provider
@@ -78,7 +78,7 @@ abstract class BaseListView
      * - `{page}`: the page number (1-based) current being displayed
      * - `{pageCount}`: the number of pages available
      */
-    public $summary;
+    public $summary = 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.';
     /**
      * @var array the HTML attributes for the summary of the list view.
      *            The "tag" element specifies the tag name of the summary element and defaults to "div".
@@ -100,7 +100,8 @@ abstract class BaseListView
      * @see showOnEmpty
      * @see emptyTextOptions
      */
-    public $emptyText = '';
+    private string $emptyText = 'No results found.';
+    private bool $showEmptyText = true;
     /**
      * @var array the HTML attributes for the emptyText of the list view.
      *            The "tag" element specifies the tag name of the emptyText element and defaults to "div".
@@ -121,7 +122,7 @@ abstract class BaseListView
     /**
      * @var \Yiisoft\I18n\MessageFormatterInterface
      */
-    private $messageFormatter;
+    private static $messageFormatter;
 
     /**
      * Renders the data models.
@@ -132,7 +133,7 @@ abstract class BaseListView
 
     public function __construct(MessageFormatterInterface $messageFormatter)
     {
-        $this->messageFormatter = $messageFormatter;
+        self::$messageFormatter = $messageFormatter;
     }
 
     /**
@@ -142,9 +143,6 @@ abstract class BaseListView
     {
         if ($this->dataReader === null) {
             throw new InvalidConfigException('The "dataReader" property must be set.');
-        }
-        if ($this->emptyText === null) {
-            $this->emptyText = 'No results found.';
         }
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
@@ -205,7 +203,7 @@ abstract class BaseListView
      */
     public function renderEmpty()
     {
-        if ($this->emptyText === false) {
+        if (!$this->showEmptyText) {
             return '';
         }
         $options = $this->emptyTextOptions;
@@ -230,15 +228,15 @@ abstract class BaseListView
         $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
         if (($pagination = $this->paginator) !== false) {
             $totalCount = $this->dataReader->count();
-            $begin = $pagination->getPage() * $pagination->pageSize + 1;
+            $begin = 0; //$pagination->getCurrentPageSize() * $pagination->pageSize + 1;
             $end = $begin + $count - 1;
             if ($begin > $end) {
                 $begin = $end;
             }
-            $page = $pagination->getPage() + 1;
-            $pageCount = $pagination->pageCount;
+            $page = 0; //$pagination->getPage() + 1;
+            $pageCount = $pagination->getCurrentPageSize();
             if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, $this->messageFormatter->format('Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
+                return Html::tag($tag, self::$messageFormatter->format('Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
                         'begin'      => $begin,
                         'end'        => $end,
                         'count'      => $count,
@@ -251,7 +249,7 @@ abstract class BaseListView
             $begin = $page = $pageCount = 1;
             $end = $totalCount = $count;
             if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, $this->messageFormatter->format('Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
+                return Html::tag($tag, self::$messageFormatter->format('Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
                     'begin'      => $begin,
                     'end'        => $end,
                     'count'      => $count,
@@ -262,14 +260,14 @@ abstract class BaseListView
             }
         }
 
-        return $this->messageFormatter->format($summaryContent, [
+        return Html::tag($tag, self::$messageFormatter->format('Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
             'begin'      => $begin,
             'end'        => $end,
             'count'      => $count,
             'totalCount' => $totalCount,
             'page'       => $page,
             'pageCount'  => $pageCount,
-        ], $language);
+        ], $language), $summaryOptions);
     }
 
     /**
@@ -279,17 +277,19 @@ abstract class BaseListView
      */
     public function renderPager()
     {
-        $pagination = $this->dataReader->getPagination();
-        if ($pagination === false || $this->dataReader->getCount() <= 0) {
+        $pagination = $this->paginator;
+        if ($pagination === false || $this->dataReader->count() <= 0) {
             return '';
         }
-        /* @var $class LinkPager */
-        $pager = $this->pager;
-        $class = ArrayHelper::remove($pager, '__class', LinkPager::class);
-        $pager['pagination'] = $pagination;
-        $pager['view'] = $this->getView();
 
-        return $class::widget($pager);
+        $config = $this->pager;
+        $class = ArrayHelper::remove($config, '__class', LinkPager::class);
+
+        /* @var $pager LinkPager */
+        $pager = $class::widget();
+        $pager->paginator = $pagination;
+
+        return $pager->run();
     }
 
     /**
@@ -329,5 +329,20 @@ abstract class BaseListView
                 return 'path/////////.php';
             }
         };
+    }
+
+    public function setEmptyText(string $emptyText): void
+    {
+        $this->emptyText = $emptyText;
+    }
+
+    public function disableEmptyText(): void
+    {
+        $this->showEmptyText = false;
+    }
+
+    public function enableEmptyText(): void
+    {
+        $this->showEmptyText = true;
     }
 }

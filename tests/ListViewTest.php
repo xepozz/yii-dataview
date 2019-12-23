@@ -1,123 +1,92 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
- *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace Yiisoft\Yii\DataView\Tests;
 
-use PHPUnit\Framework\TestCase;
-use yii\data\ArrayDataProvider;
-use yii\data\DataProviderInterface;
 use Yiisoft\Data\Paginator\OffsetPaginator;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
-use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\Yii\DataView\ListView;
 
 /**
  * @group widgets
  */
-class ListViewTest extends TestCase
+class ListViewTest extends BaseListViewTestCase
 {
     public function testEmptyListShown()
     {
-        $dataReader = $this->createDataProvider([]);
-        $out = $this->getListView([
-            'dataReader' => $dataReader,
-            'paginator' => new OffsetPaginator($dataReader),
-            'emptyText' => 'Nothing at all',
-        ])->run();
+        $dataReader = $this->createDataReader([]);
+        $listView = $this->getListView($dataReader, new OffsetPaginator($dataReader));
+        $listView->setEmptyText('Nothing at all');
+        $out = $listView->run();
         $this->assertEquals('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
     }
 
     public function testEmpty()
     {
-        $out = $this->getListView([
-            'dataProvider' => $this->createObject([
-                '__class'   => ArrayDataProvider::class,
-                'allModels' => [],
-            ]),
-            'emptyText' => false,
-        ])->run();
+        $listView = $this->getListView($this->createDataReader([]), false);
+        $listView->disableEmptyText();
+        $out = $listView->run();
 
-        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"></div>', $out);
+        $this->assertEquals('<div id="w0" class="list-view"></div>', $out);
     }
 
     public function testEmptyListNotShown()
     {
-        $out = $this->getListView([
-            'dataProvider' => $this->createObject([
-                '__class'   => ArrayDataProvider::class,
-                'allModels' => [],
-            ]),
-            'showOnEmpty' => true,
-        ])->run();
+        $listView = $this->getListView($this->createDataReader([]), false);
+        $out = $listView->run();
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
-<div id="w0" class="list-view">
-
-</div>
+        $this->assertEquals(
+            <<<'HTML'
+<div id="w0" class="list-view"><div class="empty">No results found.</div></div>
 HTML
-        , $out);
-    }
-
-    /**
-     * @param array $options
-     *
-     * @return ListView
-     */
-    private function getListView($options = [])
-    {
-        $messageFormatter = $this->createMock(MessageFormatterInterface::class);
-        $listView = new ListView($messageFormatter);
-        $listView->dataReader = $options['dataReader'];
-        $listView->paginator = $options['paginator'];
-        $listView->emptyText = $options['emptyText'];
-        $listView->options = ['id' => 'w0', 'class' => 'list-view'];
-
-        return $listView;
-    }
-
-    /**
-     * @return \Yiisoft\Data\Reader\Iterable\Processor\IterableProcessorInterface
-     */
-    private function getDataProvider()
-    {
-        return $this->createDataProvider([
-            [
-                ['id' => 1, 'login' => 'silverfire'],
-                ['id' => 2, 'login' => 'samdark'],
-                ['id' => 3, 'login' => 'cebe'],
-            ],
-        ]);
+            ,
+            $out
+        );
     }
 
     public function testSimplyListView()
     {
-        $out = $this->getListView()->run();
+        $dataReader = $this->createDataReader([0, 1, 2]);
+        $listView = $this->getListView($dataReader, false);
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
-<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+        $out = $listView->run();
+
+        $this->assertEquals(
+            <<<'HTML'
+<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
 <div data-key="2">2</div>
 </div>
 HTML
-        , $out);
+            ,
+            $out
+        );
     }
 
     public function testWidgetOptions()
     {
-        $out = $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
+        $dataReader = $this->createDataReader([0, 1, 2]);
+        $listView = $this->getListView($dataReader, false);
+        $listView->separator = '';
+        $listView->options = ['class' => 'test-passed'];
+        $out = $listView->run();
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
-<div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
-<div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
+        $this->assertEquals(
+            <<<'HTML'
+<div id="w0" class="test-passed"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
+<div data-key="0">0</div>
+<div data-key="1">1</div>
+<div data-key="2">2</div>
 </div>
 HTML
-        , $out);
+            ,
+            $out
+        );
     }
 
     public function itemViewOptions()
@@ -125,7 +94,7 @@ HTML
         return [
             [
                 null,
-                '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+                '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
 <div data-key="2">2</div>
@@ -133,9 +102,9 @@ HTML
             ],
             [
                 function ($model, $key, $index, $widget) {
-                    return "Item #{$index}: {$model['login']} - Widget: ".get_class($widget);
+                    return "Item #{$index}: {$model['login']} - Widget: " . get_class($widget);
                 },
-                '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+                '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">Item #0: silverfire - Widget: Yiisoft\Yii\DataView\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: Yiisoft\Yii\DataView\ListView</div>
 <div data-key="2">Item #2: cebe - Widget: Yiisoft\Yii\DataView\ListView</div>
@@ -143,7 +112,7 @@ HTML
             ],
             [
                 '@yii/tests/data/views/widgets/ListView/item',
-                '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+                '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">Item #0: silverfire - Widget: Yiisoft\Yii\DataView\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: Yiisoft\Yii\DataView\ListView</div>
 <div data-key="2">Item #2: cebe - Widget: Yiisoft\Yii\DataView\ListView</div>
@@ -154,14 +123,16 @@ HTML
 
     /**
      * @dataProvider itemViewOptions
-     *
-     * @param mixed  $itemView
+     * @param mixed $itemView
      * @param string $expected
      */
     public function testItemViewOptions($itemView, $expected)
     {
-        $out = $this->getListView(['itemView' => $itemView])->run();
-        $this->assertEqualsWithoutLE($expected, $out);
+        $dataReader = $this->createDataReader([0, 1, 2]);
+        $listView = $this->getListView($dataReader, false);
+        $listView->itemView = $itemView;
+        $out = $listView->run();
+        $this->assertEquals($expected, $out);
     }
 
     public function itemOptions()
@@ -169,7 +140,7 @@ HTML
         return [
             [
                 null,
-                '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+                '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
 <div data-key="2">2</div>
@@ -178,16 +149,16 @@ HTML
             [
                 function ($model, $key, $index, $widget) {
                     return [
-                        'tag'  => 'span',
+                        'tag' => 'span',
                         'data' => [
-                            'test'  => 'passed',
-                            'key'   => $key,
+                            'test' => 'passed',
+                            'key' => $key,
                             'index' => $index,
-                            'id'    => $model['id'],
+                            'id' => $model['id'],
                         ],
                     ];
                 },
-                '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+                '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <span data-test="passed" data-key="0" data-index="0" data-id="1" data-key="0">0</span>
 <span data-test="passed" data-key="1" data-index="1" data-id="2" data-key="1">1</span>
 <span data-test="passed" data-key="2" data-index="2" data-id="3" data-key="2">2</span>
@@ -198,15 +169,17 @@ HTML
 
     /**
      * @dataProvider itemOptions
-     *
-     * @param mixed  $itemOptions
+     * @param mixed $itemOptions
      * @param string $expected
      */
     public function testItemOptions($itemOptions, $expected)
     {
-        $out = $this->getListView(['itemOptions' => $itemOptions])->run();
+        $dataReader = $this->createDataReader([0, 1, 2]);
+        $listView = $this->getListView($dataReader, false);
+        $listView->itemOptions = $itemOptions;
+        $out = $listView->run();
 
-        $this->assertEqualsWithoutLE($expected, $out);
+        $this->assertEquals($expected, $out);
     }
 
     public function testBeforeAndAfterItem()
@@ -225,13 +198,16 @@ HTML
             return "<!-- after: {$model['id']}, key: $key, index: $index, widget: $widget -->";
         };
 
-        $out = $this->getListView([
-            'beforeItem' => $before,
-            'afterItem'  => $after,
-        ])->run();
+        $dataReader = $this->createDataReader([0, 1, 2]);
+        $listView = $this->getListView($dataReader, false);
+        $listView->beforeItem = $before;
+        $listView->afterItem = $after;
 
-        $this->assertEqualsWithoutLE(<<<HTML
-<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+        $out = $listView->run();
+
+        $this->assertEquals(
+            <<<HTML
+<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <!-- before: 1, key: 0, index: 0, widget: Yiisoft\Yii\DataView\ListView -->
 <div data-key="0">0</div>
 <!-- before: 2, key: 1, index: 1, widget: Yiisoft\Yii\DataView\ListView -->
@@ -242,8 +218,9 @@ HTML
 <!-- after: 3, key: 2, index: 2, widget: Yiisoft\Yii\DataView\ListView -->
 </div>
 HTML
-    , $out
-);
+            ,
+            $out
+        );
     }
 
     /**
@@ -251,21 +228,38 @@ HTML
      */
     public function testShouldTriggerInitEvent()
     {
+        $this->markTestIncomplete();
+        $dataReader = $this->createDataReader([0, 1, 2]);
         $initTriggered = false;
-        $this->getListView([
-            'on widget.init' => function () use (&$initTriggered) {
-                $initTriggered = true;
-            },
-            'dataProvider' => $this->createObject([
-                '__class'   => ArrayDataProvider::class,
-                'allModels' => [],
-            ]),
-        ]);
+
+        $this->getListView(
+            [
+                'dataReader' => $dataReader,
+                'on widget.init' => function () use (&$initTriggered) {
+                    $initTriggered = true;
+                },
+            ]
+        );
         $this->assertTrue($initTriggered);
     }
 
-    private function createDataProvider(array $models)
+    private function createDataReader(array $models)
     {
         return new IterableDataReader($models);
+    }
+
+    /**
+     * @param $dataReader
+     * @param $paginator
+     * @return ListView
+     */
+    private function getListView($dataReader, $paginator)
+    {
+        $listView = $this->container->get(ListView::class);
+        $listView->options = ['id' => 'w0', 'class' => 'list-view'];
+        $listView->dataReader = $dataReader;
+        $listView->paginator = $paginator;
+
+        return $listView;
     }
 }

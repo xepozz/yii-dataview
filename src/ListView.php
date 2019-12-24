@@ -219,10 +219,16 @@ class ListView extends BaseListView
 
     public function setItemOptions($itemOptions)
     {
-        if (!is_array($itemOptions) && !is_callable($itemOptions)) {
-            throw new \InvalidArgumentException();
+        if (is_array($itemOptions)) {
+            $this->itemOptions = ArrayHelper::merge($this->itemOptions, $itemOptions);
+            return;
         }
 
-        $this->itemOptions = ArrayHelper::merge($this->itemOptions, $itemOptions);
+        if (is_callable($itemOptions)) {
+            $this->itemOptions = $itemOptions;
+            return;
+        }
+
+        throw new \InvalidArgumentException();
     }
 }

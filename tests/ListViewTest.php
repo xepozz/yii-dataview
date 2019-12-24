@@ -91,7 +91,7 @@ HTML
     {
         return [
             [
-                [],
+                null,
                 '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
@@ -109,7 +109,7 @@ HTML
 </div>',
             ],
             [
-                '@yii/tests/data/views/widgets/ListView/item',
+                '@view/widgets/ListView/item',
                 '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">Item #0: silverfire - Widget: Yiisoft\Yii\DataView\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: Yiisoft\Yii\DataView\ListView</div>

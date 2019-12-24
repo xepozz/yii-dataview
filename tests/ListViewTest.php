@@ -172,7 +172,13 @@ HTML
      */
     public function testItemOptions($itemOptions, $expected)
     {
-        $dataReader = $this->createDataReader([0, 1, 2]);
+        $dataReader = $this->createDataReader(
+            [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ]
+        );
         $listView = $this->getListView($dataReader, false);
         $listView->itemOptions = $itemOptions;
         $out = $listView->run();

@@ -210,4 +210,9 @@ class ListView extends BaseListView
 
         return Html::tag($tag, $content, $options);
     }
+
+    public function setOptions(array $options)
+    {
+        $this->options = ArrayHelper::merge($this->options, $options);
+    }
 }

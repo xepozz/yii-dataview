@@ -73,15 +73,13 @@ HTML
         $dataReader = $this->createDataReader([0, 1, 2]);
         $listView = $this->getListView($dataReader, false);
         $listView->separator = '';
-        $listView->options = ['class' => 'test-passed'];
+        $listView->setOptions(['class' => 'test-passed']);
         $out = $listView->run();
 
         $this->assertEquals(
             <<<'HTML'
 <div id="w0" class="test-passed"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
-<div data-key="0">0</div>
-<div data-key="1">1</div>
-<div data-key="2">2</div>
+<div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
 HTML
             ,
@@ -256,7 +254,7 @@ HTML
     private function getListView($dataReader, $paginator)
     {
         $listView = $this->container->get(ListView::class);
-        $listView->options = ['id' => 'w0', 'class' => 'list-view'];
+        $listView->setOptions(['id' => 'w0', 'class' => 'list-view']);
         $listView->dataReader = $dataReader;
         $listView->paginator = $paginator;
 

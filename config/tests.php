@@ -2,6 +2,8 @@
 
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\I18n\MessageFormatterInterface;
+use Yiisoft\View\View;
+use Yiisoft\View\ViewContextInterface;
 use Yiisoft\Yii\DataView\ListView;
 
 return [
@@ -16,10 +18,12 @@ return [
             }
         };
     },
+    ViewContextInterface::class => View::class,
     ListView::class => [
         '__class' => ListView::class,
         '__construct()' => [
             Reference::to(MessageFormatterInterface::class),
+            Reference::to(ViewContextInterface::class),
         ],
     ],
 ];

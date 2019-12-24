@@ -91,7 +91,7 @@ HTML
     {
         return [
             [
-                null,
+                [],
                 '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
@@ -126,7 +126,13 @@ HTML
      */
     public function testItemViewOptions($itemView, $expected)
     {
-        $dataReader = $this->createDataReader([0, 1, 2]);
+        $dataReader = $this->createDataReader(
+            [
+                ['login' => 'silverfire'],
+                ['login' => 'samdark'],
+                ['login' => 'cebe'],
+            ]
+        );
         $listView = $this->getListView($dataReader, false);
         $listView->itemView = $itemView;
         $out = $listView->run();
@@ -137,7 +143,7 @@ HTML
     {
         return [
             [
-                null,
+                [],
                 '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
@@ -180,7 +186,7 @@ HTML
             ]
         );
         $listView = $this->getListView($dataReader, false);
-        $listView->itemOptions = $itemOptions;
+        $listView->setItemOptions($itemOptions);
         $out = $listView->run();
 
         $this->assertEquals($expected, $out);

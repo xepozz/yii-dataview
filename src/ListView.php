@@ -205,6 +205,7 @@ class ListView extends BaseListView
         } else {
             $options = $this->itemOptions;
         }
+
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $options['data-key'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : (string) $key;
 
@@ -214,5 +215,14 @@ class ListView extends BaseListView
     public function setOptions(array $options)
     {
         $this->options = ArrayHelper::merge($this->options, $options);
+    }
+
+    public function setItemOptions($itemOptions)
+    {
+        if (!is_array($itemOptions) && !is_callable($itemOptions)) {
+            throw new \InvalidArgumentException();
+        }
+
+        $this->itemOptions = ArrayHelper::merge($this->itemOptions, $itemOptions);
     }
 }

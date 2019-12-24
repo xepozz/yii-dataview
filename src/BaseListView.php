@@ -1,7 +1,6 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
- *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -18,20 +17,18 @@ use Yiisoft\Data\Reader\SortableDataInterface;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use Yiisoft\I18n\MessageFormatterInterface;
-use Yiisoft\View\ViewContextInterface;
+use Yiisoft\View\View;
 use Yiisoft\Yii\DataView\Widget\LinkPager;
 use Yiisoft\Yii\DataView\Widget\LinkSorter;
 
 /**
  * BaseListView is a base class for widgets displaying data from data provider
  * such as ListView and GridView.
- *
  * It provides features like sorting, paging and also filtering the data.
- *
- * For more details and usage information on BaseListView, see the [guide article on data widgets](guide:output-data-widgets).
+ * For more details and usage information on BaseListView, see the [guide article on data
+ * widgets](guide:output-data-widgets).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- *
  * @since 2.0
  */
 abstract class BaseListView
@@ -39,12 +36,12 @@ abstract class BaseListView
     /**
      * @var array the HTML attributes for the container tag of the list view.
      *            The "tag" element specifies the tag name of the container element and defaults to "div".
-     *
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
     /**
-     * @var DataReaderInterface|SortableDataInterface|FilterableDataInterface|OffsetableDataInterface|CountableDataInterface the data provider for the view. This property is required.
+     * @var DataReaderInterface|SortableDataInterface|FilterableDataInterface|OffsetableDataInterface|CountableDataInterface
+     *     the data provider for the view. This property is required.
      */
     public $dataReader;
     /**
@@ -55,7 +52,8 @@ abstract class BaseListView
      * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
      *            used to render the pager. You can use a different widget class by configuring the "class" element.
      *            Note that the widget must support the `pagination` property which will be populated with the
-     *            [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataReader]] and will overwrite this value.
+     *            [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataReader]] and will overwrite
+     *     this value.
      */
     public $pager = [];
     /**
@@ -68,9 +66,7 @@ abstract class BaseListView
     /**
      * @var string the HTML content to be displayed as the summary of the list view.
      *             If you do not want to show the summary, you may set it with an empty string.
-     *
      * The following tokens will be replaced with the corresponding values:
-     *
      * - `{begin}`: the starting row number (1-based) currently being displayed
      * - `{end}`: the ending row number (1-based) currently being displayed
      * - `{count}`: the number of rows currently being displayed
@@ -82,7 +78,6 @@ abstract class BaseListView
     /**
      * @var array the HTML attributes for the summary of the list view.
      *            The "tag" element specifies the tag name of the summary element and defaults to "div".
-     *
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $summaryOptions = ['class' => 'summary'];
@@ -95,8 +90,8 @@ abstract class BaseListView
     /**
      * @var string|false the HTML content to be displayed when [[dataReader]] does not have any data.
      *                   When this is set to `false` no extra HTML content will be generated.
-     *                   The default value is the text "No results found." which will be translated to the current application language.
-     *
+     *                   The default value is the text "No results found." which will be translated to the current
+     *     application language.
      * @see showOnEmpty
      * @see emptyTextOptions
      */
@@ -105,14 +100,12 @@ abstract class BaseListView
     /**
      * @var array the HTML attributes for the emptyText of the list view.
      *            The "tag" element specifies the tag name of the emptyText element and defaults to "div".
-     *
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $emptyTextOptions = ['class' => 'empty'];
     /**
      * @var string the layout that determines how different sections of the list view should be organized.
      *             The following tokens will be replaced with the corresponding section contents:
-     *
      * - `{summary}`: the summary section. See [[renderSummary()]].
      * - `{items}`: the list items. See [[renderItems()]].
      * - `{sorter}`: the sorter. See [[renderSorter()]].
@@ -122,7 +115,11 @@ abstract class BaseListView
     /**
      * @var \Yiisoft\I18n\MessageFormatterInterface
      */
-    private static $messageFormatter;
+    private static MessageFormatterInterface $messageFormatter;
+    /**
+     * @var \Yiisoft\View\View
+     */
+    private static View $view;
 
     /**
      * Renders the data models.
@@ -131,9 +128,10 @@ abstract class BaseListView
      */
     abstract public function renderItems();
 
-    public function __construct(MessageFormatterInterface $messageFormatter)
+    public function __construct(MessageFormatterInterface $messageFormatter, View $view)
     {
         self::$messageFormatter = $messageFormatter;
+        self::$view = $view;
     }
 
     /**
@@ -155,11 +153,15 @@ abstract class BaseListView
     public function run()
     {
         if ($this->showOnEmpty || $this->dataReader->count() > 0) {
-            $content = preg_replace_callback('/{\\w+}/', function ($matches) {
-                $content = $this->renderSection($matches[0]);
+            $content = preg_replace_callback(
+                '/{\\w+}/',
+                function ($matches) {
+                    $content = $this->renderSection($matches[0]);
 
-                return $content === false ? $matches[0] : $content;
-            }, $this->layout);
+                    return $content === false ? $matches[0] : $content;
+                },
+                $this->layout
+            );
         } else {
             $content = $this->renderEmpty();
         }
@@ -175,7 +177,6 @@ abstract class BaseListView
      * If the named section is not supported, false will be returned.
      *
      * @param string $name the section name, e.g., `{summary}`, `{items}`.
-     *
      * @return string|bool the rendering result of the section, or false if the named section is not supported.
      */
     public function renderSection($name)
@@ -198,7 +199,6 @@ abstract class BaseListView
      * Renders the HTML content indicating that the list view has no data.
      *
      * @return string the rendering result
-     *
      * @see emptyText
      */
     public function renderEmpty()
@@ -236,38 +236,62 @@ abstract class BaseListView
             $page = 0; //$pagination->getPage() + 1;
             $pageCount = $pagination->getCurrentPageSize();
             if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, self::$messageFormatter->format('Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
-                        'begin'      => $begin,
-                        'end'        => $end,
-                        'count'      => $count,
-                        'totalCount' => $totalCount,
-                        'page'       => $page,
-                        'pageCount'  => $pageCount,
-                    ], $language), $summaryOptions);
+                return Html::tag(
+                    $tag,
+                    self::$messageFormatter->format(
+                        'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
+                        [
+                            'begin' => $begin,
+                            'end' => $end,
+                            'count' => $count,
+                            'totalCount' => $totalCount,
+                            'page' => $page,
+                            'pageCount' => $pageCount,
+                        ],
+                        $language
+                    ),
+                    $summaryOptions
+                );
             }
         } else {
             $begin = $page = $pageCount = 1;
             $end = $totalCount = $count;
             if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, self::$messageFormatter->format('Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
-                    'begin'      => $begin,
-                    'end'        => $end,
-                    'count'      => $count,
-                    'totalCount' => $totalCount,
-                    'page'       => $page,
-                    'pageCount'  => $pageCount,
-                ], $language), $summaryOptions);
+                return Html::tag(
+                    $tag,
+                    self::$messageFormatter->format(
+                        'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
+                        [
+                            'begin' => $begin,
+                            'end' => $end,
+                            'count' => $count,
+                            'totalCount' => $totalCount,
+                            'page' => $page,
+                            'pageCount' => $pageCount,
+                        ],
+                        $language
+                    ),
+                    $summaryOptions
+                );
             }
         }
 
-        return Html::tag($tag, self::$messageFormatter->format('Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
-            'begin'      => $begin,
-            'end'        => $end,
-            'count'      => $count,
-            'totalCount' => $totalCount,
-            'page'       => $page,
-            'pageCount'  => $pageCount,
-        ], $language), $summaryOptions);
+        return Html::tag(
+            $tag,
+            self::$messageFormatter->format(
+                'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
+                [
+                    'begin' => $begin,
+                    'end' => $end,
+                    'count' => $count,
+                    'totalCount' => $totalCount,
+                    'page' => $page,
+                    'pageCount' => $pageCount,
+                ],
+                $language
+            ),
+            $summaryOptions
+        );
     }
 
     /**
@@ -318,17 +342,9 @@ abstract class BaseListView
         return rand(1, 10);
     }
 
-//    abstract public function getView(): ViewContextInterface;
-    public function getView(): ViewContextInterface{
-        return new class implements ViewContextInterface{
-            /**
-             * @inheritDoc
-             */
-            public function getViewPath(): string
-            {
-                return 'path/////////.php';
-            }
-        };
+    public function getView(): View
+    {
+        return self::$view;
     }
 
     public function setEmptyText(string $emptyText): void

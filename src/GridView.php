@@ -10,13 +10,13 @@ namespace Yiisoft\Yii\DataView;
 
 use Closure;
 use yii\base\Model;
+use yii\helpers\Yii;
+use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
-use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\Json\Json;
 use Yiisoft\Yii\DataView\Columns\Column;
 use Yiisoft\Yii\DataView\Columns\DataColumn;
-use yii\helpers\Yii;
 
 /**
  * The GridView widget is used to display data in a grid.
@@ -269,11 +269,6 @@ class GridView extends BaseListView
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
-    public function __construct(MessageFormatterInterface $messageFormatter)
-    {
-        parent::__construct($messageFormatter);
-    }
-
     /**
      * Initializes the grid view.
      * This method will initialize required property values and instantiate [[columns]] objects.
@@ -457,8 +452,8 @@ class GridView extends BaseListView
      */
     public function renderTableBody()
     {
-        $models = array_values($this->dataReader->getModels());
-        $keys = $this->dataReader->getKeys();
+        $models = $this->dataReader->read();
+        $keys = array_keys($models);
         $rows = [];
         foreach ($models as $index => $model) {
             $key = $keys[$index];
@@ -578,5 +573,10 @@ class GridView extends BaseListView
                 }
             }
         }
+    }
+
+    public function setOptions(array $options)
+    {
+        $this->options = ArrayHelper::merge($this->options, $options);
     }
 }

@@ -1,17 +1,15 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
- *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 namespace Yiisoft\Yii\DataView\Tests;
 
-use PHPUnit\Framework\TestCase;
-use yii\data\ArrayDataProvider;
-use yii\helpers\Yii;
-use yii\web\View;
+use Yiisoft\Data\Reader\DataReaderInterface;
+use Yiisoft\Data\Reader\Iterable\IterableDataReader;
+use Yiisoft\View\View;
 use Yiisoft\Yii\DataView\Columns\DataColumn;
 use Yiisoft\Yii\DataView\GridView;
 
@@ -19,7 +17,7 @@ use Yiisoft\Yii\DataView\GridView;
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
  * @group grid
  */
-class GridViewTest extends TestCase
+class GridViewTest extends BaseListViewTestCase
 {
     /**
      * @return array
@@ -36,29 +34,25 @@ class GridViewTest extends TestCase
 
     /**
      * @dataProvider emptyDataProvider
-     *
-     * @param mixed  $emptyText
+     * @param mixed $emptyText
      * @param string $expectedText
-     *
      * @throws \Exception
      */
     public function testEmpty($emptyText, $expectedText)
     {
-        $html = GridView::widget([
-            'id'           => 'grid',
-            'dataProvider' => Yii::createObject([
-                '__class'   => ArrayDataProvider::class,
-                'allModels' => [],
-            ]),
-            'showHeader'   => false,
-            'emptyText'    => $emptyText,
-            'options'      => [],
-            'tableOptions' => [],
-            'view'         => Yii::createObject([
-                '__class' => View::class,
-            ]),
-            'filterUrl' => '/',
-        ]);
+        $dataReader = $this->createDataReader([]);
+        $html = GridView::widget(
+            [
+                'id' => 'grid',
+                'dataProvider' => $dataReader,
+                'showHeader' => false,
+                'emptyText' => $emptyText,
+                'options' => [],
+                'tableOptions' => [],
+                'view' => $this->getView(),
+                'filterUrl' => '/',
+            ]
+        );
         $html = preg_replace("/\r|\n/", '', $html);
 
         if ($expectedText) {
@@ -75,15 +69,8 @@ class GridViewTest extends TestCase
     {
         $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
-        $grid = Yii::createObject([
-            '__class'      => GridView::class,
-            'dataProvider' => Yii::createObject([
-                '__class'   => ArrayDataProvider::class,
-                'allModels' => [
-                    $row,
-                ],
-            ]),
-        ]);
+        $dataReader = $this->createDataReader([$row]);
+        $grid = $this->createGridView($dataReader);
 
         $columns = $grid->columns;
         $this->assertCount(count($row), $columns);
@@ -94,17 +81,10 @@ class GridViewTest extends TestCase
         }
 
         $row = array_merge($row, ['relation' => ['id' => 1, 'name' => 'RelationName']]);
-        $row = array_merge($row, ['otherRelation' => (object) $row['relation']]);
+        $row = array_merge($row, ['otherRelation' => (object)$row['relation']]);
 
-        $grid = Yii::createObject([
-            '__class'      => GridView::class,
-            'dataProvider' => Yii::createObject([
-                '__class'   => ArrayDataProvider::class,
-                'allModels' => [
-                    $row,
-                ],
-            ]),
-        ]);
+        $dataReader = $this->createDataReader([]);
+        $grid = $this->createGridView($dataReader);
 
         $columns = $grid->columns;
         $this->assertCount(count($row) - 2, $columns);
@@ -123,22 +103,20 @@ class GridViewTest extends TestCase
     public function testFooter()
     {
         $config = [
-            'id'           => 'grid',
-            'dataProvider' => Yii::createObject([
-                '__class'   => ArrayDataProvider::class,
-                'allModels' => [],
-            ]),
-            'showHeader'   => false,
-            'showFooter'   => true,
-            'options'      => [],
+            'id' => 'grid',
+            'dataProvider' => $this->createDataReader([]),
+            'showHeader' => false,
+            'showFooter' => true,
+            'options' => [],
             'tableOptions' => [],
-            'view'         => Yii::createObject([
-                '__class' => View::class,
-            ]),
-            'filterUrl'    => '/',
+            'view' => $this->getView(),
+            'filterUrl' => '/',
         ];
 
-        $html = GridView::widget($config);
+        $dataReader = $this->createDataReader([]);
+        $gridView = $this->createGridView($dataReader);
+        $gridView->setOptions($config['options']);
+        $html = $gridView->run();
         $html = preg_replace("/\r|\n/", '', $html);
 
         $this->assertTrue(preg_match("/<\/tfoot><tbody>/", $html) === 1);
@@ -150,5 +128,23 @@ class GridViewTest extends TestCase
         $html = preg_replace("/\r|\n/", '', $html);
 
         $this->assertTrue(preg_match("/<\/tbody><tfoot>/", $html) === 1);
+    }
+
+    private function createDataReader(array $models)
+    {
+        return new IterableDataReader($models);
+    }
+
+    private function getView()
+    {
+        return $this->container->get(View::class);
+    }
+
+    private function createGridView(DataReaderInterface $dataReader)
+    {
+        $gridView = $this->container->get(GridView::class);
+        $gridView->dataReader = $dataReader;
+
+        return $gridView;
     }
 }

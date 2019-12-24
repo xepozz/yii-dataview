@@ -4,7 +4,7 @@ use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
-use Yiisoft\Yii\DataView\ListView;
+use Yiisoft\Yii\DataView\BaseListView;
 
 return [
     MessageFormatterInterface::class => static function () {
@@ -19,8 +19,8 @@ return [
         };
     },
     ViewContextInterface::class => View::class,
-    ListView::class => [
-        '__class' => ListView::class,
+    BaseListView::class => [
+        '__class' => BaseListView::class,
         '__construct()' => [
             Reference::to(MessageFormatterInterface::class),
             Reference::to(ViewContextInterface::class),

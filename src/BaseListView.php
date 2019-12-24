@@ -95,7 +95,7 @@ abstract class BaseListView
      * @see showOnEmpty
      * @see emptyTextOptions
      */
-    private string $emptyText = 'No results found.';
+    protected string $emptyText = 'No results found.';
     private bool $showEmptyText = true;
     /**
      * @var array the HTML attributes for the emptyText of the list view.

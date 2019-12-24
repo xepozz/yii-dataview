@@ -196,7 +196,13 @@ HTML
             return "<!-- after: {$model['id']}, key: $key, index: $index, widget: $widget -->";
         };
 
-        $dataReader = $this->createDataReader([0, 1, 2]);
+        $dataReader = $this->createDataReader(
+            [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ]
+        );
         $listView = $this->getListView($dataReader, false);
         $listView->beforeItem = $before;
         $listView->afterItem = $after;

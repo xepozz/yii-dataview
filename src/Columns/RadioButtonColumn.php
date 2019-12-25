@@ -1,7 +1,6 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
- *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -15,9 +14,7 @@ use Yiisoft\Html\Html;
 
 /**
  * RadioButtonColumn displays a column of radio buttons in a grid view.
- *
  * To add a RadioButtonColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
- *
  * ```php
  * 'columns' => [
  *     // ...
@@ -34,7 +31,6 @@ use Yiisoft\Html\Html;
  * ```
  *
  * @author Kirk Hansen <hanski07@luther.edu>
- *
  * @since 2.0.11
  */
 class RadioButtonColumn extends Column
@@ -46,28 +42,23 @@ class RadioButtonColumn extends Column
     /**
      * @var array|\Closure the HTML attributes for the radio buttons. This can either be an array of
      *                     attributes or an anonymous function ([[Closure]]) returning such an array.
-     *
      * The signature of the function should be as follows: `function ($model, $key, $index, $column)`
      * where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
      * and `$column` is a reference to the [[RadioButtonColumn]] object.
-     *
      * A function may be used to assign different attributes to different rows based on the data in that row.
      * Specifically if you want to set a different value for the radio button you can use this option
      * in the following way (in this example using the `name` attribute of the model):
-     *
      * ```php
      * 'radioOptions' => function ($model, $key, $index, $column) {
      *     return ['value' => $model->attribute];
      * }
      * ```
-     *
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $radioOptions = [];
 
     /**
      * {@inheritdoc}
-     *
      * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException if [[name]] is not set.
      */
     public function init(): void
@@ -80,13 +71,23 @@ class RadioButtonColumn extends Column
     public function name(string $name)
     {
         $this->name = $name;
+
         return $this;
     }
 
-    public function radioOptions(array $array)
+    /**
+     * @param array|Closure $array
+     * @return $this
+     */
+    public function radioOptions($array)
     {
-        $this->radioOptions = ArrayHelper::merge($this->radioOptions, $array);
-        return$this;
+        if ($array instanceof Closure) {
+            $this->radioOptions = $array;
+        } else {
+            $this->radioOptions = ArrayHelper::merge($this->radioOptions, $array);
+        }
+
+        return $this;
     }
 
     /**
@@ -103,7 +104,8 @@ class RadioButtonColumn extends Column
         } else {
             $options = $this->radioOptions;
             if (!isset($options['value'])) {
-                $options['value'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : $key;
+                $options['value'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+                    : $key;
             }
         }
         $checked = $options['checked'] ?? false;

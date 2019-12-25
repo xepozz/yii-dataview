@@ -49,16 +49,14 @@ class RadiobuttonColumnTest extends BaseListViewTestCase
             'label' => 'label',
             'value' => 123,
         ];
-        $column = Yii::createObject(
-            [
-                '__class' => RadioButtonColumn::class,
-                'radioOptions' => function ($model) {
+        $column = RadioButtonColumn::widget()
+            ->radioOptions(
+                function ($model) {
                     return [
                         'value' => $model['value'],
                     ];
-                },
-            ]
-        );
+                }
+            );
         $actual = $column->renderDataCell($model, 1, 0);
         $this->assertEquals(
             '<td><input type="radio" name="radioButtonSelection" value="' . $model['value'] . '"></td>',

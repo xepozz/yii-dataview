@@ -90,6 +90,12 @@ class RadioButtonColumn extends Column
         return $this;
     }
 
+    public function content(Closure $param)
+    {
+        $this->content = $param;
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      */

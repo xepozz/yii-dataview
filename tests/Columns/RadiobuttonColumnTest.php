@@ -66,23 +66,20 @@ class RadiobuttonColumnTest extends BaseListViewTestCase
 
     public function testContent()
     {
-        $column = Yii::createObject(
-            [
-                '__class' => RadioButtonColumn::class,
-                'content' => function ($model, $key, $index, $column) {
+        $column = RadioButtonColumn::widget()
+            ->content(
+                function ($model, $key, $index, $column) {
+                    return '';
                 },
-            ]
-        );
+                );
         $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
 
-        $column = Yii::createObject(
-            [
-                '__class' => RadioButtonColumn::class,
-                'content' => function ($model, $key, $index, $column) {
+        $column = RadioButtonColumn::widget()
+            ->content(
+                function ($model, $key, $index, $column) {
                     return Html::radio('radioButtonInput', false);
-                },
-            ]
-        );
+                }
+            );
         $this->assertStringContainsString(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
     }
 

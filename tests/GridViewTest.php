@@ -7,9 +7,7 @@
 
 namespace Yiisoft\Yii\DataView\Tests;
 
-use Yiisoft\Data\Reader\DataReaderInterface;
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
-use Yiisoft\View\View;
 use Yiisoft\Yii\DataView\Columns\DataColumn;
 use Yiisoft\Yii\DataView\GridView;
 
@@ -53,8 +51,7 @@ class GridViewTest extends BaseListViewTestCase
             ->setOptions(
                 [
                     'id' => 'grid',
-                    'class' => false
-                    //                    'filterUrl' => '/',
+                    'class' => false,
                 ]
             )
             ->run();
@@ -67,10 +64,14 @@ class GridViewTest extends BaseListViewTestCase
 
     public function testGuessColumns()
     {
+        $this->markTestIncomplete('Depends on DataColumnTest');
         $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
         $dataReader = $this->createDataReader([$row]);
-        $grid = $this->createGridView($dataReader);
+        $grid = GridView::widget()
+            ->withDataReader($dataReader);
+
+        $grid->init();
 
         $columns = $grid->columns;
         $this->assertCount(count($row), $columns);
@@ -84,7 +85,8 @@ class GridViewTest extends BaseListViewTestCase
         $row = array_merge($row, ['otherRelation' => (object)$row['relation']]);
 
         $dataReader = $this->createDataReader([]);
-        $grid = $this->createGridView($dataReader);
+        $grid = GridView::widget()
+            ->withDataReader($dataReader);
 
         $columns = $grid->columns;
         $this->assertCount(count($row) - 2, $columns);
@@ -102,49 +104,32 @@ class GridViewTest extends BaseListViewTestCase
      */
     public function testFooter()
     {
-        $config = [
-            'id' => 'grid',
-            'dataProvider' => $this->createDataReader([]),
-            'showHeader' => false,
-            'showFooter' => true,
-            'options' => [],
-            'tableOptions' => [],
-            'view' => $this->getView(),
-            'filterUrl' => '/',
-        ];
-
         $dataReader = $this->createDataReader([]);
-        $gridView = $this->createGridView($dataReader);
-        $gridView->setOptions($config['options']);
-        $html = $gridView->run();
+        $widget = GridView::widget()
+            ->withDataReader($dataReader)
+            ->showFooter(true)
+            ->setOptions(
+                [
+                    'id' => false,
+                    'class' => false,
+                ]
+            );
+        $html = $widget->run();
         $html = preg_replace("/\r|\n/", '', $html);
 
-        $this->assertTrue(preg_match("/<\/tfoot><tbody>/", $html) === 1);
+        $this->assertRegExp("/<\/tfoot><tbody>/", $html);
 
-        // Place footer after body
-        $config['placeFooterAfterBody'] = true;
+        $widget = (clone $widget)
+            ->placeFooterAfterBody(true);
 
-        $html = GridView::widget($config);
+        $html = $widget->run();
         $html = preg_replace("/\r|\n/", '', $html);
 
-        $this->assertTrue(preg_match("/<\/tbody><tfoot>/", $html) === 1);
+        $this->assertRegExp("/<\/tbody><tfoot>/", $html);
     }
 
     private function createDataReader(array $models)
     {
         return new IterableDataReader($models);
-    }
-
-    private function getView()
-    {
-        return $this->container->get(View::class);
-    }
-
-    private function createGridView(DataReaderInterface $dataReader)
-    {
-        $gridView = $this->container->get(GridView::class);
-        $gridView->dataReader = $dataReader;
-
-        return $gridView;
     }
 }

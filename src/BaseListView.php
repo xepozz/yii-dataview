@@ -148,6 +148,14 @@ abstract class BaseListView
     }
 
     /**
+     * @return static
+     */
+    public static function widget(): self
+    {
+        return new static(self::$messageFormatter, self::$view);
+    }
+
+    /**
      * Runs the widget.
      */
     public function run()
@@ -347,9 +355,13 @@ abstract class BaseListView
         return self::$view;
     }
 
-    public function setEmptyText(string $emptyText): void
+    public function emptyText(?string $emptyText)
     {
-        $this->emptyText = $emptyText;
+        if ($emptyText !== null) {
+            $this->emptyText = $emptyText;
+        }
+
+        return $this;
     }
 
     public function disableEmptyText(): void
@@ -360,5 +372,27 @@ abstract class BaseListView
     public function enableEmptyText(): void
     {
         $this->showEmptyText = true;
+    }
+
+    /**
+     * @param \Yiisoft\Data\Reader\CountableDataInterface|\Yiisoft\Data\Reader\DataReaderInterface|\Yiisoft\Data\Reader\FilterableDataInterface|\Yiisoft\Data\Reader\OffsetableDataInterface|\Yiisoft\Data\Reader\SortableDataInterface $dataReader
+     * @return BaseListView
+     */
+    public function withDataReader($dataReader)
+    {
+        $this->dataReader = $dataReader;
+
+        return $this;
+    }
+
+    /**
+     * @param array $options
+     * @return static
+     */
+    public function setOptions(array $options): self
+    {
+        $this->options = ArrayHelper::merge($this->options, $options);
+
+        return $this;
     }
 }

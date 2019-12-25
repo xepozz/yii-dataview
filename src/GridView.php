@@ -225,6 +225,7 @@ class GridView extends BaseListView
      */
     public $filterModel;
     /**
+     * TODO not used
      * @var string|array the URL for returning the filtering result. [[Url::to()]] will be called to
      *                   normalize the URL. If not set, the current controller action will be used.
      *                   When the user makes change to any filter input, the current filtering inputs will be appended
@@ -575,8 +576,25 @@ class GridView extends BaseListView
         }
     }
 
-    public function setOptions(array $options)
+    /**
+     * @param bool $showHeader
+     * @return self
+     */
+    public function showHeader(bool $showHeader)
     {
-        $this->options = ArrayHelper::merge($this->options, $options);
+        $this->showHeader = $showHeader;
+
+        return $this;
+    }
+
+    /**
+     * @param array $tableOptions
+     * @return GridView
+     */
+    public function withTableOptions(array $tableOptions): GridView
+    {
+        $this->tableOptions = ArrayHelper::merge($this->tableOptions, $tableOptions);
+
+        return $this;
     }
 }

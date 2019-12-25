@@ -20,7 +20,7 @@ class ListViewTest extends BaseListViewTestCase
     {
         $dataReader = $this->createDataReader([]);
         $listView = $this->getListView($dataReader, new OffsetPaginator($dataReader));
-        $listView->setEmptyText('Nothing at all');
+        $listView->emptyText('Nothing at all');
         $out = $listView->run();
         $this->assertEquals('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
     }

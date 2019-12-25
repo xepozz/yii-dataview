@@ -25,10 +25,10 @@ class GridViewTest extends BaseListViewTestCase
     public function emptyDataProvider()
     {
         return [
-            [null, 'No results found.'],
-            ['Empty', 'Empty'],
+            [null, '<tr><td colspan="0"><div class="empty">No results found.</div></td></tr>'],
+            ['Empty', '<tr><td colspan="0"><div class="empty">Empty</div></td></tr>'],
             // https://github.com/yiisoft/yii2/issues/13352
-            [false, ''],
+            [false, '<tr><td colspan="0"><div class="empty"></div></td></tr>'],
         ];
     }
 
@@ -41,26 +41,26 @@ class GridViewTest extends BaseListViewTestCase
     public function testEmpty($emptyText, $expectedText)
     {
         $dataReader = $this->createDataReader([]);
-        $html = GridView::widget(
-            [
-                'id' => 'grid',
-                'dataProvider' => $dataReader,
-                'showHeader' => false,
-                'emptyText' => $emptyText,
-                'options' => [],
-                'tableOptions' => [],
-                'view' => $this->getView(),
-                'filterUrl' => '/',
-            ]
-        );
+        $html = GridView::widget()
+            ->withDataReader($dataReader)
+            ->emptyText($emptyText)
+            ->showHeader(false)
+            ->withTableOptions(
+                [
+                    'class' => false,
+                ]
+            )
+            ->setOptions(
+                [
+                    'id' => 'grid',
+                    'class' => false
+                    //                    'filterUrl' => '/',
+                ]
+            )
+            ->run();
         $html = preg_replace("/\r|\n/", '', $html);
 
-        if ($expectedText) {
-            $emptyRowHtml = "<tr><td colspan=\"0\"><div class=\"empty\">{$expectedText}</div></td></tr>";
-        } else {
-            $emptyRowHtml = '';
-        }
-        $expectedHtml = "<div id=\"grid\"><table><tbody>{$emptyRowHtml}</tbody></table></div>";
+        $expectedHtml = "<div id=\"grid\"><table><tbody>{$expectedText}</tbody></table></div>";
 
         $this->assertEquals($expectedHtml, $html);
     }

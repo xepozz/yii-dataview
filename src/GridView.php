@@ -591,4 +591,10 @@ class GridView extends BaseListView
 
         return $this;
     }
+
+    public function columns(array $columns)
+    {
+        $this->columns = $columns;
+        return $this;
+    }
 }

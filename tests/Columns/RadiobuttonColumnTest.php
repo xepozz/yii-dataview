@@ -7,6 +7,7 @@
 
 namespace Yiisoft\Yii\DataView\Tests\Coolumns;
 
+use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Html\Html;
 use Yiisoft\Yii\DataView\Columns\RadioButtonColumn;
 use Yiisoft\Yii\DataView\GridView;
@@ -85,48 +86,30 @@ class RadiobuttonColumnTest extends BaseListViewTestCase
 
     public function testMultipleInGrid()
     {
-        $this->mockApplication();
-        Yii::setAlias('@webroot', '@yii/tests/runtime');
-        Yii::setAlias('@web', 'http://localhost/');
-        Yii::getApp()->assetManager->bundles['yii\web\JqueryAsset'] = false;
-        $this->container->set(
-            'request',
-            Yii::createObject(
-                [
-                    '__class' => Request::class,
-                    'url' => '/abc',
-                ]
-            )
-        );
-
+        $this->markTestIncomplete();
         $models = [
             ['label' => 'label1', 'value' => 1],
             ['label' => 'label2', 'value' => 2, 'checked' => true],
         ];
-        $grid = Yii::createObject(
-            [
-                '__class' => GridView::class,
-                'dataProvider' => Yii::createObject(
-                    [
-                        '__class' => ArrayDataProvider::class,
-                        'allModels' => $models,
-                    ]
-                ),
-                'options' => ['id' => 'radio-gridview'],
-                'columns' => [
-                    [
-                        '__class' => RadioButtonColumn::class,
-                        'radioOptions' => function ($model) {
-                            return [
-                                'value' => $model['value'],
-                                'checked' => $model['value'] == 2,
-                            ];
-                        },
-                    ],
-                ],
-            ]
-        );
-        $actual = $grid->run();
+        $dataReader = new IterableDataReader($models);
+
+        $widget = GridView::widget()
+            ->withDataReader($dataReader)
+            ->setOptions(['id' => 'radio-gridview'])
+            ->columns(
+                [
+                    RadioButtonColumn::widget()
+                        ->radioOptions(
+                            static function ($model) {
+                                return [
+                                    'value' => $model['value'],
+                                    'checked' => $model['value'] == 2,
+                                ];
+                            }
+                        ),
+                ]
+            );
+        $actual = $widget->run();
         $this->assertEqualsWithoutLE(
             <<<'HTML'
 <div id="radio-gridview"><div class="summary">Showing <b>1-2</b> of <b>2</b> items.</div>

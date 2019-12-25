@@ -9,9 +9,11 @@
 namespace Yiisoft\Yii\DataView\Columns;
 
 use Closure;
+use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use Yiisoft\Json\Json;
+use Yiisoft\Yii\DataView\GridView;
 
 /**
  * CheckboxColumn displays a column of checkboxes in a grid view.
@@ -96,6 +98,37 @@ class CheckboxColumn extends Column
         $this->registerClientScript();
     }
 
+    public function name(string $string)
+    {
+        $this->name = $string;
+        return $this;
+    }
+    public function grid(GridView $view)
+    {
+        $this->grid = $view;
+        return $this;
+    }
+
+    /**
+     * @param array|callable $array
+     * @return $this
+     */
+    public function checkboxOptions($array)
+    {
+        $this->checkboxOptions = ArrayHelper::merge($this->checkboxOptions, $array);
+        return $this;
+    }
+
+    /**
+     * @param Closure|string $param
+     * @return $this
+     */
+    public function content($param)
+    {
+        $this->content = $param;
+        return $this;
+    }
+
     /**
      * Renders the header cell content.
      * The default implementation simply renders [[header]].
@@ -121,7 +154,7 @@ class CheckboxColumn extends Column
             return parent::renderDataCellContent($model, $key, $index);
         }
 
-        if ($this->checkboxOptions instanceof Closure) {
+        if (is_callable($this->checkboxOptions)) {
             $options = call_user_func($this->checkboxOptions, $model, $key, $index, $this);
         } else {
             $options = $this->checkboxOptions;

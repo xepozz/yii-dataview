@@ -9,6 +9,7 @@
 namespace Yiisoft\Yii\DataView\Columns;
 
 use Closure;
+use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 
@@ -80,6 +81,12 @@ class RadioButtonColumn extends Column
     {
         $this->name = $name;
         return $this;
+    }
+
+    public function radioOptions(array $array)
+    {
+        $this->radioOptions = ArrayHelper::merge($this->radioOptions, $array);
+        return$this;
     }
 
     /**

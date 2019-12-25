@@ -5,6 +5,7 @@ use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\View\View;
 use Yiisoft\View\ViewContextInterface;
 use Yiisoft\Yii\DataView\BaseListView;
+use Yiisoft\Yii\DataView\Columns\Column;
 
 return [
     MessageFormatterInterface::class => static function () {
@@ -24,6 +25,12 @@ return [
         '__construct()' => [
             Reference::to(MessageFormatterInterface::class),
             Reference::to(ViewContextInterface::class),
+        ],
+    ],
+    Column::class => [
+        '__class' => Column::class,
+        '__construct()' => [
+            Reference::to(MessageFormatterInterface::class),
         ],
     ],
 ];

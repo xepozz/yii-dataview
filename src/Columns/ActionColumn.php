@@ -8,9 +8,9 @@
 
 namespace Yiisoft\Yii\DataView\Columns;
 
-use Yiisoft\Html\Html;
 use yii\helpers\Url;
 use yii\helpers\Yii;
+use Yiisoft\Html\Html;
 
 /**
  * ActionColumn is a column for the [[GridView]] widget that displays buttons for viewing and manipulating the items.
@@ -132,25 +132,16 @@ class ActionColumn extends Column
     public $buttonOptions = [];
 
     /**
-     * {@inheritdoc}
-     */
-    public function __construct(string $template = null)
-    {
-        if ($template !== null) {
-            $this->template = $template;
-        }
-        $this->initDefaultButtons();
-    }
-
-    /**
      * Initializes the default button rendering callbacks.
      */
-    protected function initDefaultButtons()
+    public function init()
     {
         $this->initDefaultButton('view', 'eye-open');
         $this->initDefaultButton('update', 'pencil');
+        // TODO fix
+        $language = 'language';
         $this->initDefaultButton('delete', 'trash', [
-            'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+            'data-confirm' => self::$messageFormatter->format( 'Are you sure you want to delete this item?', [], $language),
             'data-method'  => 'post',
         ]);
     }
@@ -168,15 +159,17 @@ class ActionColumn extends Column
     {
         if (!isset($this->buttons[$name]) && strpos($this->template, '{'.$name.'}') !== false) {
             $this->buttons[$name] = function ($url, $model, $key) use ($name, $iconName, $additionalOptions) {
+                // TODO fix
+                $language = 'language';
                 switch ($name) {
                     case 'view':
-                        $title = Yii::t('yii', 'View');
+                        $title = self::$messageFormatter->format('View', [], $language);
                         break;
                     case 'update':
-                        $title = Yii::t('yii', 'Update');
+                        $title = self::$messageFormatter->format( 'Update', [], $language);
                         break;
                     case 'delete':
-                        $title = Yii::t('yii', 'Delete');
+                        $title = self::$messageFormatter->format( 'Delete', [], $language);
                         break;
                     default:
                         $title = ucfirst($name);
@@ -191,6 +184,12 @@ class ActionColumn extends Column
                 return Html::a($icon, $url, $options);
             };
         }
+    }
+
+    public function template(string $template)
+    {
+        $this->template = $template;
+        return $this;
     }
 
     /**

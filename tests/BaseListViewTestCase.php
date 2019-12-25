@@ -8,15 +8,18 @@ use Yiisoft\Tests\TestCase;
 
 abstract class BaseListViewTestCase extends TestCase
 {
-    protected $baseListView;
-
+    /**
+     * @throws \Yiisoft\Factory\Exceptions\CircularReferenceException
+     * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException
+     * @throws \Yiisoft\Factory\Exceptions\NotFoundException
+     * @throws \Yiisoft\Factory\Exceptions\NotInstantiableException
+     */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $config = require Builder::path('tests');
-
-        $this->container = new Container($config);
-        $this->listView = $this->container->get(\Yiisoft\Yii\DataView\ListView::class);
+        $container = new Container(require Builder::path('tests'));
+        $container->get(\Yiisoft\Yii\DataView\ListView::class);
+        $container->get(\Yiisoft\Yii\DataView\Columns\ActionColumn::class);
     }
 }

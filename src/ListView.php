@@ -110,11 +110,11 @@ class ListView extends BaseListView
      */
     public $afterItem;
 
-
     /**
      * Renders all data models.
      *
      * @return string the rendering result
+     * @throws \Throwable
      */
     public function renderItems()
     {
@@ -181,10 +181,10 @@ class ListView extends BaseListView
      * Renders a single data model.
      *
      * @param mixed $model the data model to be rendered
-     * @param mixed $key   the key value associated with the data model
-     * @param int   $index the zero-based index of the data model in the model array returned by [[dataProvider]].
-     *
+     * @param mixed $key the key value associated with the data model
+     * @param int $index the zero-based index of the data model in the model array returned by [[dataProvider]].
      * @return string the rendering result
+     * @throws \Throwable
      */
     public function renderItem($model, $key, $index)
     {
@@ -207,7 +207,7 @@ class ListView extends BaseListView
         }
 
         $tag = ArrayHelper::remove($options, 'tag', 'div');
-        $options['data-key'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : (string) $key;
+        $options['data-key'] = is_array($key) ? json_encode($key, JSON_THROW_ON_ERROR| JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : (string) $key;
 
         return Html::tag($tag, $content, $options);
     }

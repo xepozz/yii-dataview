@@ -226,12 +226,9 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
         $model->id = 1;
         $model->text = 'I`m arrayable';
 
-        $widget = $this->app->createObject(
-            [
-                '__class' => PublicDetailView::class,
-                'model' => $model,
-            ]
-        );
+        $widget = PublicDetailView::widget()
+            ->withModel($model);
+        $widget->init();
 
         $this->assertEquals($expectedValue, $widget->attributes);
     }

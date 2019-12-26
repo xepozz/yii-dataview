@@ -124,10 +124,6 @@ class DetailView
             throw new InvalidConfigException('Please specify the "model" property.');
         }
         $this->normalizeAttributes();
-
-        if (!isset($this->options['id'])) {
-            $this->options['id'] = $this->getId();
-        }
     }
 
     /**

@@ -7,8 +7,8 @@
 
 namespace Yiisoft\Yii\DataView;
 
-use yii\helpers\Yii;
 use Yiisoft\Arrays\ArrayHelper;
+use Yiisoft\Data\Paginator\PaginatorInterface;
 use Yiisoft\Data\Reader\CountableDataInterface;
 use Yiisoft\Data\Reader\DataReaderInterface;
 use Yiisoft\Data\Reader\FilterableDataInterface;
@@ -234,7 +234,7 @@ abstract class BaseListView
 
         $summaryOptions = $this->summaryOptions;
         $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
-        if (($pagination = $this->paginator) !== false) {
+        if (($pagination = $this->paginator) !== null) {
             $totalCount = $this->dataReader->count();
             $begin = 0; //$pagination->getCurrentPageSize() * $pagination->pageSize + 1;
             $end = $begin + $count - 1;
@@ -310,7 +310,7 @@ abstract class BaseListView
     public function renderPager()
     {
         $pagination = $this->paginator;
-        if ($pagination === false || $this->dataReader->count() <= 0) {
+        if ($pagination === null || $this->dataReader->count() <= 0) {
             return '';
         }
 
@@ -376,9 +376,9 @@ abstract class BaseListView
 
     /**
      * @param \Yiisoft\Data\Reader\CountableDataInterface|\Yiisoft\Data\Reader\DataReaderInterface|\Yiisoft\Data\Reader\FilterableDataInterface|\Yiisoft\Data\Reader\OffsetableDataInterface|\Yiisoft\Data\Reader\SortableDataInterface $dataReader
-     * @return BaseListView
+     * @return static
      */
-    public function withDataReader($dataReader)
+    public function withDataReader($dataReader): self
     {
         $this->dataReader = $dataReader;
 
@@ -392,6 +392,17 @@ abstract class BaseListView
     public function setOptions(array $options): self
     {
         $this->options = ArrayHelper::merge($this->options, $options);
+
+        return $this;
+    }
+
+    /**
+     * @param $paginator
+     * @return static
+     */
+    public function withPaginator(?PaginatorInterface $paginator): self
+    {
+        $this->paginator = $paginator;
 
         return $this;
     }

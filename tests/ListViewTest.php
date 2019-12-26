@@ -27,7 +27,7 @@ class ListViewTest extends BaseListViewTestCase
 
     public function testEmpty()
     {
-        $listView = $this->getListView($this->createDataReader([]), false);
+        $listView = $this->getListView($this->createDataReader([]), null);
         $listView->disableEmptyText();
         $out = $listView->run();
 
@@ -36,7 +36,7 @@ class ListViewTest extends BaseListViewTestCase
 
     public function testEmptyListNotShown()
     {
-        $listView = $this->getListView($this->createDataReader([]), false);
+        $listView = $this->getListView($this->createDataReader([]), null);
         $out = $listView->run();
 
         $this->assertEquals(
@@ -51,7 +51,7 @@ HTML
     public function testSimplyListView()
     {
         $dataReader = $this->createDataReader([0, 1, 2]);
-        $listView = $this->getListView($dataReader, false);
+        $listView = $this->getListView($dataReader, null);
 
         $out = $listView->run();
 
@@ -71,7 +71,7 @@ HTML
     public function testWidgetOptions()
     {
         $dataReader = $this->createDataReader([0, 1, 2]);
-        $listView = $this->getListView($dataReader, false);
+        $listView = $this->getListView($dataReader, null);
         $listView->separator = '';
         $listView->setOptions(['class' => 'test-passed']);
         $out = $listView->run();
@@ -126,7 +126,6 @@ HTML
      */
     public function testItemViewOptions($itemView, $expected)
     {
-        $this->markTestIncomplete();
         $dataReader = $this->createDataReader(
             [
                 ['login' => 'silverfire'],
@@ -134,7 +133,7 @@ HTML
                 ['login' => 'cebe'],
             ]
         );
-        $listView = $this->getListView($dataReader, false);
+        $listView = $this->getListView($dataReader, null);
         $listView->itemView = $itemView;
         $out = $listView->run();
         $this->assertEquals($expected, $out);
@@ -187,7 +186,7 @@ HTML
                 ['id' => 3],
             ]
         );
-        $listView = $this->getListView($dataReader, false);
+        $listView = $this->getListView($dataReader, null);
         $listView->setItemOptions($itemOptions);
         $out = $listView->run();
 
@@ -217,7 +216,7 @@ HTML
                 ['id' => 3],
             ]
         );
-        $listView = $this->getListView($dataReader, false);
+        $listView = $this->getListView($dataReader, null);
         $listView->beforeItem = $before;
         $listView->afterItem = $after;
 
@@ -271,13 +270,11 @@ HTML
      * @param $paginator
      * @return ListView
      */
-    private function getListView($dataReader, $paginator)
+    private function getListView($dataReader, $paginator): ListView
     {
-        $listView = $this->container->get(ListView::class);
-        $listView->setOptions(['id' => 'w0', 'class' => 'list-view']);
-        $listView->dataReader = $dataReader;
-        $listView->paginator = $paginator;
-
-        return $listView;
+        return ListView::widget()
+            ->setOptions(['id' => 'w0', 'class' => 'list-view'])
+            ->withDataReader($dataReader)
+            ->withPaginator($paginator);
     }
 }

@@ -495,15 +495,8 @@ class GridView extends BaseListView
             if (is_string($column)) {
                 $column = $this->createDataColumn($column);
             } else {
-                $column = $this->app->createObject(
-                    array_merge(
-                        [
-                            '__class' => $this->dataColumnClass ?: DataColumn::class,
-                            'grid' => $this,
-                        ],
-                        $column
-                    )
-                );
+                $column = $this->dataColumnClass::widget()
+                    ->grid($this);
             }
             if (!$column->visible) {
                 unset($this->columns[$i]);
@@ -528,15 +521,15 @@ class GridView extends BaseListView
             );
         }
 
-        return $this->app->createObject(
-            [
-                '__class' => $this->dataColumnClass ?: DataColumn::class,
-                'grid' => $this,
-                'attribute' => $matches[1],
-                'format' => $matches[3] ?? 'text',
-                'label' => $matches[5] ?? null,
-            ]
-        );
+        $columnClass = $this->dataColumnClass;
+
+        /* @var DataColumn $widget */
+        $widget = $columnClass::widget();
+
+        return $widget->grid($this)
+            ->attribute($matches[1])
+            ->format($matches[3] ?? 'text')
+            ->label($matches[5] ?? null);
     }
 
     /**
@@ -595,6 +588,7 @@ class GridView extends BaseListView
     public function columns(array $columns)
     {
         $this->columns = $columns;
+
         return $this;
     }
 }

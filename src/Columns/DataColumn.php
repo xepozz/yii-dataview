@@ -83,7 +83,7 @@ class DataColumn extends Column
      *                           the [[GridView]]. Default format is "text" which will format the value as an HTML-encoded plain text when
      *                           [[\yii\i18n\Formatter]] is used as the [[GridView::$formatter|formatter]] of the GridView.
      *
-     * @see \yii\i18n\Formatter::format()
+     * @see \Yiisoft\I18n\MessageFormatterInterface::format()
      */
     public $format = 'text';
     /**
@@ -124,6 +124,27 @@ class DataColumn extends Column
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $filterInputOptions = [];
+
+    public function attribute(string $attribute): DataColumn
+    {
+        $this->attribute = $attribute;
+
+        return $this;
+    }
+
+    public function format($format)
+    {
+        $this->format = $format;
+
+        return $this;
+    }
+
+    public function label($label): DataColumn
+    {
+        $this->label = $label;
+
+        return $this;
+    }
 
     /**
      * {@inheritdoc}

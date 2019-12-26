@@ -92,6 +92,12 @@ abstract class Column
 
     }
 
+    public function grid(GridView $view)
+    {
+        $this->grid = $view;
+        return $this;
+    }
+
     /**
      * Renders the header cell.
      */

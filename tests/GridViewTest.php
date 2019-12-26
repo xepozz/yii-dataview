@@ -64,7 +64,6 @@ class GridViewTest extends BaseListViewTestCase
 
     public function testGuessColumns()
     {
-        $this->markTestIncomplete('Depends on DataColumnTest');
         $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
         $dataReader = $this->createDataReader([$row]);
@@ -84,10 +83,11 @@ class GridViewTest extends BaseListViewTestCase
         $row = array_merge($row, ['relation' => ['id' => 1, 'name' => 'RelationName']]);
         $row = array_merge($row, ['otherRelation' => (object)$row['relation']]);
 
-        $dataReader = $this->createDataReader([]);
+        $dataReader = $this->createDataReader([$row]);
         $grid = GridView::widget()
             ->withDataReader($dataReader);
 
+        $grid->init();
         $columns = $grid->columns;
         $this->assertCount(count($row) - 2, $columns);
 

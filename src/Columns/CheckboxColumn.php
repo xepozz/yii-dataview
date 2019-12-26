@@ -13,7 +13,6 @@ use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use Yiisoft\Json\Json;
-use Yiisoft\Yii\DataView\GridView;
 
 /**
  * CheckboxColumn displays a column of checkboxes in a grid view.
@@ -101,11 +100,6 @@ class CheckboxColumn extends Column
     public function name(string $string)
     {
         $this->name = $string;
-        return $this;
-    }
-    public function grid(GridView $view)
-    {
-        $this->grid = $view;
         return $this;
     }
 

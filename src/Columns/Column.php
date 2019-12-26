@@ -28,7 +28,7 @@ abstract class Column
     /**
      * @var string the header cell content. Note that it will not be HTML-encoded.
      */
-    public $header;
+    public string $header;
     /**
      * @var string the footer cell content. Note that it will not be HTML-encoded.
      */
@@ -53,7 +53,7 @@ abstract class Column
      * @var array the HTML attributes for the header cell tag.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $headerOptions = [];
+    public array $headerOptions = [];
     /**
      * @var array|\Closure the HTML attributes for the data cell tag. This can either be an array of
      *                     attributes or an anonymous function ([[Closure]]) that returns such an array.
@@ -89,12 +89,12 @@ abstract class Column
 
     public function init()
     {
-
     }
 
-    public function grid(GridView $view)
+    public function withGrid(GridView $view): self
     {
         $this->grid = $view;
+
         return $this;
     }
 

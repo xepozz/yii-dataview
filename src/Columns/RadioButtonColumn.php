@@ -68,7 +68,7 @@ class RadioButtonColumn extends Column
         }
     }
 
-    public function name(string $name)
+    public function withName(string $name): self
     {
         $this->name = $name;
 
@@ -77,9 +77,9 @@ class RadioButtonColumn extends Column
 
     /**
      * @param array|Closure $array
-     * @return $this
+     * @return static
      */
-    public function radioOptions($array)
+    public function withRadioOptions($array): self
     {
         if ($array instanceof Closure) {
             $this->radioOptions = $array;
@@ -90,9 +90,10 @@ class RadioButtonColumn extends Column
         return $this;
     }
 
-    public function content(Closure $param)
+    public function withContent(callable $param): self
     {
         $this->content = $param;
+
         return $this;
     }
 

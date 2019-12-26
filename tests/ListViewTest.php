@@ -20,7 +20,7 @@ class ListViewTest extends TestCase
     {
         $dataReader = $this->createDataReader([]);
         $listView = $this->getListView($dataReader, new OffsetPaginator($dataReader));
-        $listView->emptyText('Nothing at all');
+        $listView->withEmptyText('Nothing at all');
         $out = $listView->run();
         $this->assertEquals('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
     }
@@ -73,7 +73,7 @@ HTML
         $dataReader = $this->createDataReader([0, 1, 2]);
         $listView = $this->getListView($dataReader, null);
         $listView->separator = '';
-        $listView->setOptions(['class' => 'test-passed']);
+        $listView->withOptions(['class' => 'test-passed']);
         $out = $listView->run();
 
         $this->assertEquals(
@@ -186,9 +186,9 @@ HTML
                 ['id' => 3],
             ]
         );
-        $listView = $this->getListView($dataReader, null);
-        $listView->setItemOptions($itemOptions);
-        $out = $listView->run();
+        $out = $this->getListView($dataReader, null)
+            ->withItemOptions($itemOptions)
+            ->run();
 
         $this->assertEquals($expected, $out);
     }
@@ -273,7 +273,7 @@ HTML
     private function getListView($dataReader, $paginator): ListView
     {
         return ListView::widget()
-            ->setOptions(['id' => 'w0', 'class' => 'list-view'])
+            ->withOptions(['id' => 'w0', 'class' => 'list-view'])
             ->withDataReader($dataReader)
             ->withPaginator($paginator);
     }

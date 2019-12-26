@@ -207,7 +207,7 @@ abstract class BaseListView
      * Renders the HTML content indicating that the list view has no data.
      *
      * @return string the rendering result
-     * @see emptyText
+     * @see withEmptyText
      */
     public function renderEmpty()
     {
@@ -355,7 +355,7 @@ abstract class BaseListView
         return self::$view;
     }
 
-    public function emptyText(?string $emptyText)
+    public function withEmptyText(?string $emptyText): self
     {
         if ($emptyText !== null) {
             $this->emptyText = $emptyText;
@@ -389,7 +389,7 @@ abstract class BaseListView
      * @param array $options
      * @return static
      */
-    public function setOptions(array $options): self
+    public function withOptions(array $options): self
     {
         $this->options = ArrayHelper::merge($this->options, $options);
 

@@ -1,7 +1,6 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
- *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -16,9 +15,7 @@ use Yiisoft\Json\Json;
 
 /**
  * CheckboxColumn displays a column of checkboxes in a grid view.
- *
  * To add a CheckboxColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
- *
  * ```php
  * 'columns' => [
  *     // ...
@@ -28,43 +25,39 @@ use Yiisoft\Json\Json;
  *     ],
  * ]
  * ```
- *
  * Users may click on the checkboxes to select rows of the grid. The selected rows may be
  * obtained by calling the following JavaScript code:
- *
  * ```javascript
  * var keys = $('#grid').yiiGridView('getSelectedRows');
  * // keys is an array consisting of the keys associated with the selected rows
  * ```
- *
- * For more details and usage information on CheckboxColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ * For more details and usage information on CheckboxColumn, see the [guide article on data
+ * widgets](guide:output-data-widgets).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- *
  * @since 2.0
  */
 class CheckboxColumn extends Column
 {
     /**
-     * @var string the name of the input checkbox input fields. This will be appended with `[]` to ensure it is an array.
+     * @var string the name of the input checkbox input fields. This will be appended with `[]` to ensure it is an
+     *     array.
      */
     public $name = 'selection';
     /**
      * @var array|\Closure the HTML attributes for checkboxes. This can either be an array of
      *                     attributes or an anonymous function ([[Closure]]) that returns such an array.
-     *                     The signature of the function should be the following: `function ($model, $key, $index, $column)`.
-     *                     Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
-     *                     and `$column` is a reference to the [[CheckboxColumn]] object.
-     *                     A function may be used to assign different attributes to different rows based on the data in that row.
-     *                     Specifically if you want to set a different value for the checkbox
-     *                     you can use this option in the following way (in this example using the `name` attribute of the model):
-     *
+     *                     The signature of the function should be the following: `function ($model, $key, $index,
+     *     $column)`. Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being
+     *     rendered and `$column` is a reference to the [[CheckboxColumn]] object. A function may be used to assign
+     *     different attributes to different rows based on the data in that row. Specifically if you want to set a
+     *     different value for the checkbox you can use this option in the following way (in this example using the
+     *     `name` attribute of the model):
      * ```php
      * 'checkboxOptions' => function ($model, $key, $index, $column) {
      *     return ['value' => $model->name];
      * }
      * ```
-     *
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $checkboxOptions = [];
@@ -74,14 +67,12 @@ class CheckboxColumn extends Column
     public $multiple = true;
     /**
      * @var string the css class that will be used to find the checkboxes.
-     *
      * @since 2.0.9
      */
     public $cssClass;
 
     /**
      * {@inheritdoc}
-     *
      * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException if [[name]] is not set.
      */
     public function init()
@@ -97,9 +88,10 @@ class CheckboxColumn extends Column
         $this->registerClientScript();
     }
 
-    public function name(string $string)
+    public function withName(string $string): self
     {
         $this->name = $string;
+
         return $this;
     }
 
@@ -107,9 +99,10 @@ class CheckboxColumn extends Column
      * @param array|callable $array
      * @return $this
      */
-    public function checkboxOptions($array)
+    public function withCheckboxOptions($array): self
     {
         $this->checkboxOptions = ArrayHelper::merge($this->checkboxOptions, $array);
+
         return $this;
     }
 
@@ -117,9 +110,10 @@ class CheckboxColumn extends Column
      * @param Closure|string $param
      * @return $this
      */
-    public function content($param)
+    public function withContent($param): self
     {
         $this->content = $param;
+
         return $this;
     }
 
@@ -169,7 +163,6 @@ class CheckboxColumn extends Column
      * Returns header checkbox name.
      *
      * @return string header checkbox name
-     *
      * @since 2.0.8
      */
     protected function getHeaderCheckBoxName()
@@ -179,7 +172,7 @@ class CheckboxColumn extends Column
             $name = substr($name, 0, -2);
         }
         if (substr_compare($name, ']', -1, 1) === 0) {
-            $name = substr($name, 0, -1).'_all]';
+            $name = substr($name, 0, -1) . '_all]';
         } else {
             $name .= '_all';
         }
@@ -195,12 +188,14 @@ class CheckboxColumn extends Column
     public function registerClientScript()
     {
         $id = $this->grid->options['id'];
-        $options = Json::encode([
-            'name'     => $this->name,
-            'class'    => $this->cssClass,
-            'multiple' => $this->multiple,
-            'checkAll' => $this->grid->showHeader ? $this->getHeaderCheckBoxName() : null,
-        ]);
+        $options = Json::encode(
+            [
+                'name' => $this->name,
+                'class' => $this->cssClass,
+                'multiple' => $this->multiple,
+                'checkAll' => $this->grid->showHeader ? $this->getHeaderCheckBoxName() : null,
+            ]
+        );
         $this->grid->getView()->registerJs("jQuery('#$id').yiiGridView('setSelectionColumn', $options);");
     }
 }

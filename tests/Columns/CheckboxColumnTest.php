@@ -26,8 +26,8 @@ class CheckboxColumnTest extends TestCase
     public function testInputName(string $name, string $expectedPart)
     {
         $column = CheckboxColumn::widget()
-            ->name($name)
-            ->grid($this->getGrid());
+            ->withName($name)
+            ->withGrid($this->getGrid());
         $this->assertStringContainsString($expectedPart, $column->renderHeaderCell());
     }
 
@@ -45,56 +45,56 @@ class CheckboxColumnTest extends TestCase
 
     public function testInputValue()
     {
-        $column = CheckboxColumn::widget()->grid($this->getGrid());
+        $column = CheckboxColumn::widget()->withGrid($this->getGrid());
         $this->assertStringContainsString('value="1"', $column->renderDataCell([], 1, 0));
         $this->assertStringContainsString('value="42"', $column->renderDataCell([], 42, 0));
         $this->assertStringContainsString('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
 
         $column = CheckboxColumn::widget()
-            ->checkboxOptions(['value' => 42])
-            ->grid($this->getGrid());
+            ->withCheckboxOptions(['value' => 42])
+            ->withGrid($this->getGrid());
         $this->assertStringNotContainsString('value="1"', $column->renderDataCell([], 1, 0));
         $this->assertStringContainsString('value="42"', $column->renderDataCell([], 1, 0));
 
         $column = CheckboxColumn::widget()
-            ->checkboxOptions(
+            ->withCheckboxOptions(
                 static function ($model, $key, $index, $column) {
                     return [];
                 }
             )
-            ->grid($this->getGrid());
+            ->withGrid($this->getGrid());
         $this->assertStringContainsString('value="1"', $column->renderDataCell([], 1, 0));
         $this->assertStringContainsString('value="42"', $column->renderDataCell([], 42, 0));
         $this->assertStringContainsString('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
 
         $this->markTestIncomplete();
         $column = CheckboxColumn::widget()
-            ->checkboxOptions(
+            ->withCheckboxOptions(
                 static function ($model, $key, $index, $column) {
                     return ['value' => 43];
                 }
             )
-            ->grid($this->getGrid());
+            ->withGrid($this->getGrid());
         $this->assertStringContainsString('value="43"', $column->renderDataCell([], 1, 0));
     }
 
     public function testContent()
     {
         $column = CheckboxColumn::widget()
-            ->content(
+            ->withContent(
                 function ($model, $key, $index, $column) {
                     return '';
                 }
             )
-            ->grid($this->getGrid());
+            ->withGrid($this->getGrid());
         $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
 
         $column = CheckboxColumn::widget()
-            ->content(
+            ->withContent(
                 function ($model, $key, $index, $column) {
                     return Html::checkBox('checkBoxInput', false);
                 }
-            )->grid($this->getGrid());
+            )->withGrid($this->getGrid());
         $this->assertStringContainsString(Html::checkBox('checkBoxInput', false), $column->renderDataCell([], 1, 0));
     }
 

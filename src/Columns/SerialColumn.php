@@ -1,7 +1,6 @@
 <?php
 /**
  * @link http://www.yiiframework.com/
- *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
@@ -10,9 +9,7 @@ namespace Yiisoft\Yii\DataView\Columns;
 
 /**
  * SerialColumn displays a column of row numbers (1-based).
- *
  * To add a SerialColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
- *
  * ```php
  * 'columns' => [
  *     // ...
@@ -22,11 +19,10 @@ namespace Yiisoft\Yii\DataView\Columns;
  *     ],
  * ]
  * ```
- *
- * For more details and usage information on SerialColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ * For more details and usage information on SerialColumn, see the [guide article on data
+ * widgets](guide:output-data-widgets).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- *
  * @since 2.0
  */
 class SerialColumn extends Column
@@ -34,16 +30,16 @@ class SerialColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public $header = '#';
+    public string $header = '#';
 
     /**
      * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {
-        $pagination = $this->grid->dataReader->getPagination();
-        if ($pagination !== false) {
-            return $pagination->getOffset() + $index + 1;
+        $dataReader = $this->grid->dataReader;
+        if ($dataReader !== null) {
+            return $dataReader->count() + $index + 1;
         }
 
         return $index + 1;

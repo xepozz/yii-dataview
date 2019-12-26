@@ -41,14 +41,14 @@ class GridViewTest extends TestCase
         $dataReader = $this->createDataReader([]);
         $html = GridView::widget()
             ->withDataReader($dataReader)
-            ->emptyText($emptyText)
-            ->showHeader(false)
+            ->withEmptyText($emptyText)
+            ->withShowHeader(false)
             ->withTableOptions(
                 [
                     'class' => false,
                 ]
             )
-            ->setOptions(
+            ->withOptions(
                 [
                     'id' => 'grid',
                     'class' => false,
@@ -107,8 +107,8 @@ class GridViewTest extends TestCase
         $dataReader = $this->createDataReader([]);
         $widget = GridView::widget()
             ->withDataReader($dataReader)
-            ->showFooter(true)
-            ->setOptions(
+            ->withShowFooter(true)
+            ->withOptions(
                 [
                     'id' => false,
                     'class' => false,
@@ -120,7 +120,7 @@ class GridViewTest extends TestCase
         $this->assertRegExp("/<\/tfoot><tbody>/", $html);
 
         $widget = (clone $widget)
-            ->placeFooterAfterBody(true);
+            ->withPlaceFooterAfterBody(true);
 
         $html = $widget->run();
         $html = preg_replace("/\r|\n/", '', $html);

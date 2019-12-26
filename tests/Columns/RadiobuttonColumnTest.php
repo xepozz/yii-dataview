@@ -26,14 +26,14 @@ class RadiobuttonColumnTest extends TestCase
         $this->expectException(\Yiisoft\Factory\Exceptions\InvalidConfigException::class);
         $this->expectErrorMessage('The "name" property must be set.');
         RadioButtonColumn::widget()
-            ->name('')
+            ->withName('')
             ->init();
     }
 
     public function testOptionsByArray()
     {
         $column = RadioButtonColumn::widget()
-            ->radioOptions(
+            ->withRadioOptions(
                 [
                     'value' => 42,
                 ]
@@ -51,7 +51,7 @@ class RadiobuttonColumnTest extends TestCase
             'value' => 123,
         ];
         $column = RadioButtonColumn::widget()
-            ->radioOptions(
+            ->withRadioOptions(
                 function ($model) {
                     return [
                         'value' => $model['value'],
@@ -68,7 +68,7 @@ class RadiobuttonColumnTest extends TestCase
     public function testContent()
     {
         $column = RadioButtonColumn::widget()
-            ->content(
+            ->withContent(
                 function ($model, $key, $index, $column) {
                     return '';
                 },
@@ -76,7 +76,7 @@ class RadiobuttonColumnTest extends TestCase
         $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
 
         $column = RadioButtonColumn::widget()
-            ->content(
+            ->withContent(
                 function ($model, $key, $index, $column) {
                     return Html::radio('radioButtonInput', false);
                 }
@@ -95,11 +95,11 @@ class RadiobuttonColumnTest extends TestCase
 
         $widget = GridView::widget()
             ->withDataReader($dataReader)
-            ->setOptions(['id' => 'radio-gridview'])
-            ->columns(
+            ->withOptions(['id' => 'radio-gridview'])
+            ->withColumns(
                 [
                     RadioButtonColumn::widget()
-                        ->radioOptions(
+                        ->withRadioOptions(
                             static function ($model) {
                                 return [
                                     'value' => $model['value'],

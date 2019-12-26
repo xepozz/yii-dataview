@@ -28,7 +28,7 @@ abstract class Column
     /**
      * @var string the header cell content. Note that it will not be HTML-encoded.
      */
-    public string $header;
+    public $header;
     /**
      * @var string the footer cell content. Note that it will not be HTML-encoded.
      */

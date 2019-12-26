@@ -254,12 +254,9 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
         $model->id = 1;
         $model->text = 'I`m an object';
 
-        $widget = $this->app->createObject(
-            [
-                '__class' => PublicDetailView::class,
-                'model' => $model,
-            ]
-        );
+        $widget = PublicDetailView::widget()
+            ->withModel($model);
+        $widget->init();
 
         $this->assertEquals($expectedValue, $widget->attributes);
     }
@@ -286,12 +283,9 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
             'text' => 'I`m an array',
         ];
 
-        $widget = $this->app->createObject(
-            [
-                '__class' => PublicDetailView::class,
-                'model' => $model,
-            ]
-        );
+        $widget = PublicDetailView::widget()
+            ->withModel($model);
+        $widget->init();
 
         $this->assertEquals($expectedValue, $widget->attributes);
     }
@@ -300,22 +294,22 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
     {
         $expectedValue = '<tr><th tooltip="Tooltip">Text</th><td class="bg-red">I`m an array</td></tr>';
 
-        $widget = $this->app->createObject(
-            [
-                '__class' => PublicDetailView::class,
-                'model' => [
+        $widget = PublicDetailView::widget()
+            ->withModel(
+                [
                     'text' => 'I`m an array',
-                ],
-                'attributes' => [
+                ]
+            )
+            ->withAttributes(
+                [
                     [
                         'attribute' => 'text',
                         'label' => 'Text',
                         'contentOptions' => ['class' => 'bg-red'],
                         'captionOptions' => ['tooltip' => 'Tooltip'],
                     ],
-                ],
-            ]
-        );
+                ]
+            );
 
         foreach ($widget->attributes as $index => $attribute) {
             $a = $widget->renderAttribute($attribute, $index);
@@ -333,15 +327,15 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
         $model->id = 1;
         $model->text = 'I`m an object';
 
-        $widget = $this->app->createObject(
-            [
-                '__class' => PublicDetailView::class,
-                'model' => $model,
-                'on widget.init' => function () use (&$initTriggered) {
+        $this->markTestIncomplete('Need to implement EventDispatcherListener');
+        $widget = PublicDetailView::widget()
+            ->withModel($model)
+            ->on(
+                'on widget.init',
+                function () use (&$initTriggered) {
                     $initTriggered = true;
                 },
-            ]
-        );
+                );
 
         $this->assertTrue($initTriggered);
     }

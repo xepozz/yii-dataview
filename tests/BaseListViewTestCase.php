@@ -3,8 +3,10 @@
 namespace Yiisoft\Yii\DataView\Tests;
 
 use hiqdev\composer\config\Builder;
+use PHPUnit\Framework\TestCase;
 use Yiisoft\Di\Container;
-use Yiisoft\Tests\TestCase;
+use Yiisoft\Yii\DataView\Columns\ActionColumn;
+use Yiisoft\Yii\DataView\ListView;
 
 abstract class BaseListViewTestCase extends TestCase
 {
@@ -19,7 +21,7 @@ abstract class BaseListViewTestCase extends TestCase
         parent::setUp();
 
         $container = new Container(require Builder::path('tests'));
-        $container->get(\Yiisoft\Yii\DataView\ListView::class);
-        $container->get(\Yiisoft\Yii\DataView\Columns\ActionColumn::class);
+        $container->get(ListView::class);
+        $container->get(ActionColumn::class);
     }
 }

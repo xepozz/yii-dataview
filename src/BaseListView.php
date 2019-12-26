@@ -111,7 +111,7 @@ abstract class BaseListView
      * - `{sorter}`: the sorter. See [[renderSorter()]].
      * - `{pager}`: the pager. See [[renderPager()]].
      */
-    public $layout = "{summary}\n{items}\n{pager}";
+    public string $layout = "{summary}\n{items}\n{pager}";
     /**
      * @var \Yiisoft\I18n\MessageFormatterInterface
      */
@@ -137,7 +137,7 @@ abstract class BaseListView
     /**
      * Initializes the view.
      */
-    public function init(): void
+    public function init(): self
     {
         if ($this->dataReader === null) {
             throw new InvalidConfigException('The "dataReader" property must be set.');
@@ -145,6 +145,8 @@ abstract class BaseListView
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
+
+        return $this;
     }
 
     /**

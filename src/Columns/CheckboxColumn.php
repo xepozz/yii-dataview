@@ -75,7 +75,7 @@ class CheckboxColumn extends Column
      * {@inheritdoc}
      * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException if [[name]] is not set.
      */
-    public function init()
+    public function init(): self
     {
         parent::init();
         if (empty($this->name)) {
@@ -86,6 +86,8 @@ class CheckboxColumn extends Column
         }
 
         $this->registerClientScript();
+
+        return $this;
     }
 
     public function withName(string $string): self

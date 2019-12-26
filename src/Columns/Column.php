@@ -87,8 +87,9 @@ abstract class Column
         return new static(self::$messageFormatter);
     }
 
-    public function init()
+    public function init():self
     {
+        return $this;
     }
 
     public function withGrid(GridView $view): self

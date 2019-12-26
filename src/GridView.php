@@ -239,20 +239,21 @@ class GridView extends BaseListView
      * - `{sorter}`: the sorter. See [[renderSorter()]].
      * - `{pager}`: the pager. See [[renderPager()]].
      */
-    public $layout = "{summary}\n{items}\n{pager}";
+    public string $layout = "{summary}\n{items}\n{pager}";
 
     /**
      * Initializes the grid view.
      * This method will initialize required property values and instantiate [[columns]] objects.
      */
-    public function init(): void
+    public function init(): self
     {
-        parent::init();
         if (!isset($this->filterRowOptions['id'])) {
             $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
         }
 
         $this->initColumns();
+
+        return $this;
     }
 
     /**

@@ -120,12 +120,14 @@ class DetailView
      *
      * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException
      */
-    public function init(): void
+    public function init(): self
     {
         if ($this->model === null) {
             throw new InvalidConfigException('Please specify the "model" property.');
         }
         $this->normalizeAttributes();
+
+        return $this;
     }
 
     /**

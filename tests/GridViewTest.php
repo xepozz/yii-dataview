@@ -68,9 +68,8 @@ class GridViewTest extends TestCase
 
         $dataReader = $this->createDataReader([$row]);
         $grid = GridView::widget()
-            ->withDataReader($dataReader);
-
-        $grid->init();
+            ->withDataReader($dataReader)
+            ->init();
 
         $columns = $grid->columns;
         $this->assertCount(count($row), $columns);
@@ -85,9 +84,9 @@ class GridViewTest extends TestCase
 
         $dataReader = $this->createDataReader([$row]);
         $grid = GridView::widget()
-            ->withDataReader($dataReader);
+            ->withDataReader($dataReader)
+            ->init();
 
-        $grid->init();
         $columns = $grid->columns;
         $this->assertCount(count($row) - 2, $columns);
 

@@ -227,8 +227,8 @@ class DetailViewTest extends TestCase
         $model->text = 'I`m arrayable';
 
         $widget = PublicDetailView::widget()
-            ->withModel($model);
-        $widget->init();
+            ->withModel($model)
+            ->init();
 
         $this->assertEquals($expectedValue, $widget->attributes);
     }
@@ -255,8 +255,8 @@ class DetailViewTest extends TestCase
         $model->text = 'I`m an object';
 
         $widget = PublicDetailView::widget()
-            ->withModel($model);
-        $widget->init();
+            ->withModel($model)
+            ->init();
 
         $this->assertEquals($expectedValue, $widget->attributes);
     }
@@ -284,8 +284,8 @@ class DetailViewTest extends TestCase
         ];
 
         $widget = PublicDetailView::widget()
-            ->withModel($model);
-        $widget->init();
+            ->withModel($model)
+            ->init();
 
         $this->assertEquals($expectedValue, $widget->attributes);
     }

@@ -18,39 +18,38 @@ class ActionColumnTest extends TestCase
 {
     public function testInit()
     {
-        $column = ActionColumn::widget();
-        $column->init();
+        $column = ActionColumn::widget()
+            ->init();
         $this->assertEquals(['view', 'update', 'delete'], array_keys($column->buttons));
 
         $column = ActionColumn::widget()
-            ->template('{show} {edit} {delete}');
-        $column->init();
-
+            ->template('{show} {edit} {delete}')
+            ->init();
         $this->assertEquals(['delete'], array_keys($column->buttons));
 
         $column = ActionColumn::widget()
-            ->template('{show} {edit} {remove}');
-        $column->init();
+            ->template('{show} {edit} {remove}')
+            ->init();
         $this->assertEmpty($column->buttons);
 
         $column = ActionColumn::widget()
-            ->template('{view-items} {update-items} {delete-items}');
-        $column->init();
+            ->template('{view-items} {update-items} {delete-items}')
+            ->init();
         $this->assertEmpty($column->buttons);
 
         $column = ActionColumn::widget()
-            ->template('{view} {view-items}');
-        $column->init();
+            ->template('{view} {view-items}')
+            ->init();
         $this->assertEquals(['view'], array_keys($column->buttons));
     }
 
     public function testRenderDataCell()
     {
-        $column = ActionColumn::widget();
+        $column = ActionColumn::widget()
+            ->init();
         $column->urlCreator = function ($model, $key, $index) {
             return 'http://test.com';
         };
-        $column->init();
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $viewButton = '<a href="http://test.com" title="View" aria-label="View" data-name="view"><span class="glyphicon glyphicon-eye-open"></span></a>';
         $updateButton = '<a href="http://test.com" title="Update" aria-label="Update" data-name="update"><span class="glyphicon glyphicon-pencil"></span></a>';
@@ -58,8 +57,8 @@ class ActionColumnTest extends TestCase
         $expectedHtml = "<td>$viewButton $updateButton $deleteButton</td>";
         $this->assertEquals($expectedHtml, $columnContents);
 
-        $column = ActionColumn::widget();
-        $column->init();
+        $column = ActionColumn::widget()
+            ->init();
         $column->urlCreator = function ($model, $key, $index) {
             return 'http://test.com';
         };

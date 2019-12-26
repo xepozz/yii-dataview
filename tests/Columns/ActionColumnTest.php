@@ -8,13 +8,13 @@
 namespace Yiisoft\Yii\DataView\Tests\Coolumns;
 
 use Yiisoft\Yii\DataView\Columns\ActionColumn;
-use Yiisoft\Yii\DataView\Tests\BaseListViewTestCase;
+use Yiisoft\Yii\DataView\Tests\TestCase;
 
 /**
  * @author Vitaly S. <fornit1917@gmail.com>
  * @group grid
  */
-class ActionColumnTest extends BaseListViewTestCase
+class ActionColumnTest extends TestCase
 {
     public function testInit()
     {

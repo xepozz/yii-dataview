@@ -11,12 +11,12 @@ use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Html\Html;
 use Yiisoft\Yii\DataView\Columns\CheckboxColumn;
 use Yiisoft\Yii\DataView\GridView;
-use Yiisoft\Yii\DataView\Tests\BaseListViewTestCase;
+use Yiisoft\Yii\DataView\Tests\TestCase;
 
 /**
  * @group grid
  */
-class CheckboxColumnTest extends BaseListViewTestCase
+class CheckboxColumnTest extends TestCase
 {
     /**
      * @dataProvider inputName()

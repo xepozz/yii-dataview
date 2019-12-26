@@ -14,7 +14,7 @@ use Yiisoft\Yii\DataView\ListView;
 /**
  * @group widgets
  */
-class ListViewTest extends BaseListViewTestCase
+class ListViewTest extends TestCase
 {
     public function testEmptyListShown()
     {

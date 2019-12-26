@@ -11,7 +11,7 @@ use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Html\Html;
 use Yiisoft\Yii\DataView\Columns\RadioButtonColumn;
 use Yiisoft\Yii\DataView\GridView;
-use Yiisoft\Yii\DataView\Tests\BaseListViewTestCase;
+use Yiisoft\Yii\DataView\Tests\TestCase;
 
 /**
  * Class RadiobuttonColumnTest.
@@ -19,7 +19,7 @@ use Yiisoft\Yii\DataView\Tests\BaseListViewTestCase;
  * @group grid
  * @since 2.0.11
  */
-class RadiobuttonColumnTest extends BaseListViewTestCase
+class RadiobuttonColumnTest extends TestCase
 {
     public function testException()
     {

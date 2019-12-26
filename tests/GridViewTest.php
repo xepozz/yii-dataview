@@ -15,7 +15,7 @@ use Yiisoft\Yii\DataView\GridView;
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
  * @group grid
  */
-class GridViewTest extends BaseListViewTestCase
+class GridViewTest extends TestCase
 {
     /**
      * @return array

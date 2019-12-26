@@ -3,12 +3,11 @@
 namespace Yiisoft\Yii\DataView\Tests;
 
 use hiqdev\composer\config\Builder;
-use PHPUnit\Framework\TestCase;
 use Yiisoft\Di\Container;
 use Yiisoft\Yii\DataView\Columns\ActionColumn;
 use Yiisoft\Yii\DataView\ListView;
 
-abstract class BaseListViewTestCase extends TestCase
+abstract class TestCase extends TestCase
 {
     /**
      * @throws \Yiisoft\Factory\Exceptions\CircularReferenceException

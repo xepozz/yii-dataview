@@ -85,12 +85,11 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
         $model = new ModelMock();
         $model->id = 'id';
 
-        $widget = $this->app->createObject(
-            [
-                '__class' => PublicDetailView::class,
-                'model' => $model,
-                'template' => '{label}:{value}',
-                'attributes' => [
+        $widget = PublicDetailView::widget()
+            ->withModel($model)
+            ->withTemplate('{label}:{value}')
+            ->withAttributes(
+                [
                     [
                         'attribute' => 'id',
                         'value' => $model->getDisplayedId(),
@@ -125,9 +124,8 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
                         },
                         'visible' => true,
                     ],
-                ],
-            ]
-        );
+                ]
+            );
 
         $this->assertEquals(
             [

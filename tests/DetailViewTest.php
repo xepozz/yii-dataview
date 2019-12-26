@@ -9,7 +9,7 @@ use Yiisoft\Yii\DataView\DetailView;
 /**
  * @group widgets
  */
-class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
+class DetailViewTest extends TestCase
 {
     public function testAttributeValue()
     {
@@ -43,11 +43,11 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
                 ]
             );
 
-        $this->assertEquals('Id:id', $widget->renderAttribute($widget->attributes[0], 0));
-        $this->assertEquals('Id:1', $widget->renderAttribute($widget->attributes[1], 1));
-        $this->assertEquals('Id:1', $widget->renderAttribute($widget->attributes[2], 2));
-        $this->assertEquals('Id:Displayed id', $widget->renderAttribute($widget->attributes[3], 3));
-        $this->assertEquals('Id:Displayed id', $widget->renderAttribute($widget->attributes[4], 4));
+        $this->assertEquals('Id:id', $widget->renderAttr($widget->attributes[0], 0));
+        $this->assertEquals('Id:1', $widget->renderAttr($widget->attributes[1], 1));
+        $this->assertEquals('Id:1', $widget->renderAttr($widget->attributes[2], 2));
+        $this->assertEquals('Id:Displayed id', $widget->renderAttr($widget->attributes[3], 3));
+        $this->assertEquals('Id:Displayed id', $widget->renderAttr($widget->attributes[4], 4));
         $this->assertEquals(2, $model->getDisplayedIdCallCount());
     }
 
@@ -72,11 +72,11 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
 
         $this->assertEquals(
             'Идентификатор Товара:A00001',
-            $widget->renderAttribute($widget->attributes[0], 0)
+            $widget->renderAttr($widget->attributes[0], 0)
         );
         $this->assertEquals(
             'Το Αναγνωριστικό Του:A00002',
-            $widget->renderAttribute($widget->attributes[1], 1)
+            $widget->renderAttr($widget->attributes[1], 1)
         );
     }
 
@@ -178,10 +178,10 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
                 ]
             );
 
-        $this->assertEquals('Id:model', $widget->renderAttribute($widget->attributes[0], 0));
+        $this->assertEquals('Id:model', $widget->renderAttr($widget->attributes[0], 0));
         $this->assertEquals(
             'Related Id:related',
-            $widget->renderAttribute($widget->attributes[1], 1)
+            $widget->renderAttr($widget->attributes[1], 1)
         );
 
         // test null relation
@@ -197,11 +197,11 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
                 ]
             );
 
-        $this->assertEquals('Id:model', $widget->renderAttribute($widget->attributes[0], 0));
+        $this->assertEquals('Id:model', $widget->renderAttr($widget->attributes[0], 0));
         $this->markTestIncomplete('Needs to implement null-value');
         $this->assertEquals(
             'Related Id:<span class="not-set">(not set)</span>',
-            $widget->renderAttribute($widget->attributes[1], 1)
+            $widget->renderAttr($widget->attributes[1], 1)
         );
     }
 
@@ -312,7 +312,7 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
             );
 
         foreach ($widget->attributes as $index => $attribute) {
-            $a = $widget->renderAttribute($attribute, $index);
+            $a = $widget->renderAttr($attribute, $index);
             $this->assertEquals($expectedValue, $a);
         }
     }
@@ -408,8 +408,8 @@ class UnicodeAttributesModelMock
 
 class PublicDetailView extends DetailView
 {
-    public function renderAttribute($attribute, $index)
+    public function renderAttr($attribute, $index): string
     {
-        return parent::renderAttribute($attribute, $index);
+        return $this->renderAttribute($attribute, $index);
     }
 }

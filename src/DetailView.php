@@ -78,7 +78,7 @@ class DetailView
      * - `captionOptions`: the HTML attributes to customize label tag. For example: `['class' => 'bg-red']`.
      *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
      */
-    public $attributes;
+    public array $attributes = [];
     /**
      * @var string|callable the template used to render a single attribute. If a string, the token `{label}`
      *                      and `{value}` will be replaced with the label and the value of the corresponding attribute.
@@ -109,7 +109,7 @@ class DetailView
         self::$messageFormatter = $formatter;
     }
 
-    public static function widget()
+    public static function widget(): self
     {
         return new static(self::$messageFormatter);
     }
@@ -117,6 +117,8 @@ class DetailView
     /**
      * Initializes the detail view.
      * This method will initialize required property values.
+     *
+     * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException
      */
     public function init(): void
     {
@@ -132,7 +134,7 @@ class DetailView
      *
      * @return string the result of widget execution to be outputted.
      */
-    public function run()
+    public function run(): string
     {
         $rows = [];
         $i = 0;
@@ -153,7 +155,7 @@ class DetailView
      * @param int $index the zero-based index of the attribute in the [[attributes]] array
      * @return string the rendering result
      */
-    protected function renderAttribute($attribute, $index)
+    protected function renderAttribute($attribute, $index): string
     {
         if (is_string($this->template)) {
             $captionOptions = Html::renderTagAttributes(ArrayHelper::getValue($attribute, 'captionOptions', []));
@@ -185,9 +187,9 @@ class DetailView
      *
      * @throws InvalidConfigException
      */
-    protected function normalizeAttributes()
+    protected function normalizeAttributes(): void
     {
-        if ($this->attributes === null) {
+        if ($this->attributes === []) {
             if ($this->model instanceof Model) {
                 $this->attributes = $this->model->attributes();
             } elseif (is_object($this->model)) {
@@ -255,23 +257,23 @@ class DetailView
 
     /**
      * @param array|object $model
-     * @return DetailView
+     * @return static
      */
-    public function withModel($model)
+    public function withModel($model): self
     {
         $this->model = $model;
 
         return $this;
     }
 
-    public function withTemplate(string $string)
+    public function withTemplate(string $string): self
     {
         $this->template = $string;
 
         return $this;
     }
 
-    public function withAttributes(array $array)
+    public function withAttributes(array $array): self
     {
         $this->attributes = $array;
         $this->normalizeAttributes();

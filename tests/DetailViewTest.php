@@ -60,17 +60,15 @@ class DetailViewTest extends \Yiisoft\Yii\DataView\Tests\TestCase
         $model->ИдентификаторТовара = 'A00001';
         $model->το_αναγνωριστικό_του = 'A00002';
 
-        $widget = $this->app->createObject(
-            [
-                '__class' => PublicDetailView::class,
-                'model' => $model,
-                'template' => '{label}:{value}',
-                'attributes' => [
+        $widget = PublicDetailView::widget()
+            ->withModel($model)
+            ->withTemplate('{label}:{value}')
+            ->withAttributes(
+                [
                     'ИдентификаторТовара',
                     'το_αναγνωριστικό_του',
-                ],
-            ]
-        );
+                ]
+            );
 
         $this->assertEquals(
             'Идентификатор Товара:A00001',

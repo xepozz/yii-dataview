@@ -6,7 +6,6 @@ use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Data\Paginator\PaginatorInterface;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
-use Yiisoft\Widget\Widget;
 
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
@@ -18,7 +17,7 @@ use Yiisoft\Widget\Widget;
  * For more details and usage information on LinkPager, see the [guide article on pagination](guide:output-pagination).
  * TODO write tests
  */
-class LinkPager extends Widget
+class LinkPager
 {
     /**
      * @var \Yiisoft\Data\Paginator\PaginatorInterface the pagination object that this pager is associated with.

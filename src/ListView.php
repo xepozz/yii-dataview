@@ -74,7 +74,7 @@ class ListView extends BaseListView implements ViewContextInterface
      * @see renderBeforeItem
      * @since 2.0.11
      */
-    public ?Closure $beforeItem;
+    public ?Closure $beforeItem = null;
     /**
      * @var \Closure|null ?Closure an anonymous function that is called once AFTER rendering each data model.
      * It should have the same signature as [[beforeItem]].
@@ -83,7 +83,7 @@ class ListView extends BaseListView implements ViewContextInterface
      * @see renderAfterItem
      * @since 2.0.11
      */
-    public ?Closure $afterItem;
+    public ?Closure $afterItem = null;
 
     /**
      * Renders all data models.

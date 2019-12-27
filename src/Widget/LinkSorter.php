@@ -5,15 +5,13 @@ namespace Yiisoft\Yii\DataView\Widget;
 use Yiisoft\Data\Reader\Sort;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
-use Yiisoft\Widget\Widget;
 
 /**
  * LinkSorter renders a list of sort links for the given sort definition.
  * LinkSorter will generate a hyperlink for every attribute declared in [[sort]].
  * For more details and usage information on LinkSorter, see the [guide article on sorting](guide:output-sorting).
- * @method static LinkSorter widget()
  */
-class LinkSorter extends Widget
+class LinkSorter
 {
     /**
      * @var \Yiisoft\Data\Reader\Sort the sort definition
@@ -36,6 +34,11 @@ class LinkSorter extends Widget
      */
     public array $linkOptions = [];
 
+    public static function widget(): self
+    {
+        return new static();
+    }
+
     /**
      * Initializes the sorter.
      *
@@ -43,8 +46,6 @@ class LinkSorter extends Widget
      */
     public function init(): void
     {
-        parent::init();
-
         if ($this->sort === null) {
             throw new InvalidConfigException('The "sort" property must be set.');
         }

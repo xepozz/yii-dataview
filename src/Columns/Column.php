@@ -20,11 +20,11 @@ abstract class Column
     /**
      * @var string the header cell content. Note that it will not be HTML-encoded.
      */
-    public string $header;
+    public ?string $header = null;
     /**
      * @var string the footer cell content. Note that it will not be HTML-encoded.
      */
-    public string $footer;
+    public string $footer = '';
     /**
      * @var callable This is a callable that will be used to generate the content of each cell.
      *               The signature of the function should be the following: `function ($model, $key, $index, $column)`.

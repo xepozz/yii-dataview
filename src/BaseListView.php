@@ -7,6 +7,7 @@
 
 namespace Yiisoft\Yii\DataView;
 
+use Yiisoft\Aliases\Aliases;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Data\Paginator\PaginatorInterface;
 use Yiisoft\Data\Reader\CountableDataInterface;
@@ -120,6 +121,18 @@ abstract class BaseListView
      * @var \Yiisoft\View\View
      */
     private static View $view;
+    /**
+     * @var \Yiisoft\Aliases\Aliases
+     */
+    private static Aliases $aliases;
+
+    /**
+     * @return \Yiisoft\Aliases\Aliases
+     */
+    protected function getAliases(): Aliases
+    {
+        return self::$aliases;
+    }
 
     /**
      * Renders the data models.
@@ -128,10 +141,11 @@ abstract class BaseListView
      */
     abstract public function renderItems();
 
-    public function __construct(MessageFormatterInterface $messageFormatter, View $view)
+    public function __construct(MessageFormatterInterface $messageFormatter, View $view, Aliases $aliases)
     {
         self::$messageFormatter = $messageFormatter;
         self::$view = $view;
+        self::$aliases = $aliases;
     }
 
     /**
@@ -154,7 +168,7 @@ abstract class BaseListView
      */
     public static function widget(): self
     {
-        return new static(self::$messageFormatter, self::$view);
+        return new static(self::$messageFormatter, self::$view, self::$aliases);
     }
 
     /**

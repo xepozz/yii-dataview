@@ -10,6 +10,7 @@ namespace Yiisoft\Yii\DataView;
 use Closure;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Html\Html;
+use Yiisoft\View\ViewContextInterface;
 
 /**
  * The ListView widget is used to display data from data
@@ -21,7 +22,7 @@ use Yiisoft\Html\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ListView extends BaseListView
+class ListView extends BaseListView implements ViewContextInterface
 {
     /**
      * @var array|Closure the HTML attributes for the container of the rendering result of each data model.
@@ -128,13 +129,14 @@ class ListView extends BaseListView
      * @param int $index the zero-based index of the data model in the model array returned by [[dataProvider]].
      * @return string|null [[beforeItem]] call result or `null` when [[beforeItem]] is not a closure
      * @see beforeItem
-     * @since 2.0.11
      */
     protected function renderBeforeItem($model, $key, $index)
     {
         if ($this->beforeItem instanceof Closure) {
             return call_user_func($this->beforeItem, $model, $key, $index, $this);
         }
+
+        return null;
     }
 
     /**
@@ -153,6 +155,8 @@ class ListView extends BaseListView
         if ($this->afterItem instanceof Closure) {
             return call_user_func($this->afterItem, $model, $key, $index, $this);
         }
+
+        return null;
     }
 
     /**
@@ -170,7 +174,7 @@ class ListView extends BaseListView
             $content = $key;
         } elseif (is_string($this->itemView)) {
             $content = $this->getView()->render(
-                $this->itemView,
+                $this->getAliases()->get($this->getItemViewPath()),
                 array_merge(
                     [
                         'model' => $model,
@@ -179,10 +183,14 @@ class ListView extends BaseListView
                         'widget' => $this,
                     ],
                     $this->viewParams
-                )
+                ),
+                $this
             );
-        } else {
+        } elseif (is_callable($this->itemView)) {
             $content = call_user_func($this->itemView, $model, $key, $index, $this);
+        } else {
+            // TODO make InvalidConfigException
+            throw new \RuntimeException('Unknown type of $itemView');
         }
         if ($this->itemOptions instanceof Closure) {
             $options = call_user_func($this->itemOptions, $model, $key, $index, $this);
@@ -214,5 +222,22 @@ class ListView extends BaseListView
         }
 
         throw new \InvalidArgumentException();
+    }
+
+    public function getItemViewPath(): ?string
+    {
+        if (is_callable($this->itemView)) {
+            return ($this->itemView)();
+        }
+
+        return $this->itemView;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getViewPath(): string
+    {
+        return '';$this->getAliases()->get('@view');
     }
 }

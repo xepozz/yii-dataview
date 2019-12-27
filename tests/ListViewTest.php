@@ -109,7 +109,7 @@ HTML
 </div>',
             ],
             [
-                '@view/widgets/ListView/item',
+                '@view/widgets/ListView/item.php',
                 '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
 <div data-key="0">Item #0: silverfire - Widget: Yiisoft\Yii\DataView\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: Yiisoft\Yii\DataView\ListView</div>

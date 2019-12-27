@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\DataView\Tests\Widget;
 
 use Yiisoft\Data\Reader\Sort;
-use Yiisoft\Tests\TestCase;
+use Yiisoft\Yii\DataView\Tests\TestCase;
 use Yiisoft\Yii\DataView\Widget\LinkSorter;
 
 /**

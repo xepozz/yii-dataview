@@ -238,6 +238,6 @@ class ListView extends BaseListView implements ViewContextInterface
      */
     public function getViewPath(): string
     {
-        return '';$this->getAliases()->get('@view');
+        return '';
     }
 }

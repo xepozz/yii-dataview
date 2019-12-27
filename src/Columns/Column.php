@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView\Columns;
 
@@ -15,24 +10,21 @@ use Yiisoft\Yii\DataView\GridView;
 /**
  * Column is the base class of all [[GridView]] column classes.
  * For more details and usage information on Column, see the [guide article on data widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 abstract class Column
 {
     /**
      * @var GridView the grid view object that owns this column.
      */
-    public $grid;
+    public GridView $grid;
     /**
      * @var string the header cell content. Note that it will not be HTML-encoded.
      */
-    public $header;
+    public string $header;
     /**
      * @var string the footer cell content. Note that it will not be HTML-encoded.
      */
-    public $footer;
+    public string $footer;
     /**
      * @var callable This is a callable that will be used to generate the content of each cell.
      *               The signature of the function should be the following: `function ($model, $key, $index, $column)`.
@@ -43,12 +35,12 @@ abstract class Column
     /**
      * @var bool whether this column is visible. Defaults to true.
      */
-    public $visible = true;
+    public bool $visible = true;
     /**
      * @var array the HTML attributes for the column group tag.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = [];
+    public array $options = [];
     /**
      * @var array the HTML attributes for the header cell tag.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -68,12 +60,12 @@ abstract class Column
      * @var array the HTML attributes for the footer cell tag.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $footerOptions = [];
+    public array $footerOptions = [];
     /**
      * @var array the HTML attributes for the filter cell tag.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $filterOptions = [];
+    public array $filterOptions = [];
 
     protected static MessageFormatterInterface $messageFormatter;
 
@@ -82,12 +74,12 @@ abstract class Column
         self::$messageFormatter = $messageFormatter;
     }
 
-    public static function widget()
+    public static function widget(): self
     {
         return new static(self::$messageFormatter);
     }
 
-    public function init():self
+    public function init(): self
     {
         return $this;
     }
@@ -102,7 +94,7 @@ abstract class Column
     /**
      * Renders the header cell.
      */
-    public function renderHeaderCell()
+    public function renderHeaderCell(): string
     {
         return Html::tag('th', $this->renderHeaderCellContent(), $this->headerOptions);
     }
@@ -110,7 +102,7 @@ abstract class Column
     /**
      * Renders the footer cell.
      */
-    public function renderFooterCell()
+    public function renderFooterCell(): string
     {
         return Html::tag('td', $this->renderFooterCellContent(), $this->footerOptions);
     }
@@ -124,7 +116,7 @@ abstract class Column
      *     [[GridView::dataProvider]].
      * @return string the rendering result
      */
-    public function renderDataCell($model, $key, $index)
+    public function renderDataCell($model, $key, $index): string
     {
         if ($this->contentOptions instanceof Closure) {
             $options = call_user_func($this->contentOptions, $model, $key, $index, $this);
@@ -138,7 +130,7 @@ abstract class Column
     /**
      * Renders the filter cell.
      */
-    public function renderFilterCell()
+    public function renderFilterCell(): string
     {
         return Html::tag('td', $this->renderFilterCellContent(), $this->filterOptions);
     }
@@ -150,7 +142,7 @@ abstract class Column
      *
      * @return string the rendering result
      */
-    protected function renderHeaderCellContent()
+    protected function renderHeaderCellContent(): string
     {
         return trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
     }
@@ -162,7 +154,7 @@ abstract class Column
      * @return string label
      * @since 2.0.8
      */
-    protected function getHeaderCellLabel()
+    protected function getHeaderCellLabel(): string
     {
         return $this->grid->emptyCell;
     }
@@ -174,7 +166,7 @@ abstract class Column
      *
      * @return string the rendering result
      */
-    protected function renderFooterCellContent()
+    protected function renderFooterCellContent(): string
     {
         return trim($this->footer) !== '' ? $this->footer : $this->grid->emptyCell;
     }
@@ -188,7 +180,7 @@ abstract class Column
      *     [[GridView::dataProvider]].
      * @return string the rendering result
      */
-    protected function renderDataCellContent($model, $key, $index)
+    protected function renderDataCellContent($model, $key, $index): string
     {
         if (is_callable($this->content)) {
             return call_user_func($this->content, $model, $key, $index, $this);
@@ -204,7 +196,7 @@ abstract class Column
      *
      * @return string the rendering result
      */
-    protected function renderFilterCellContent()
+    protected function renderFilterCellContent(): string
     {
         return $this->grid->emptyCell;
     }

@@ -11,10 +11,10 @@ use Yiisoft\Yii\DataView\DetailView;
  */
 class DetailViewTest extends TestCase
 {
-    public function testAttributeValue()
+    public function testAttributeValue(): void
     {
         $model = new ModelMock();
-        $model->id = 'id';
+        $model->id = 123;
 
         $widget = PublicDetailView::widget()
             ->withModel($model)
@@ -36,25 +36,25 @@ class DetailViewTest extends TestCase
                     ],
                     [
                         'attribute' => 'id',
-                        'value' => function (ModelMock $model) {
+                        'value' => static function (ModelMock $model) {
                             return $model->getDisplayedId();
                         },
                     ],
                 ]
             );
 
-        $this->assertEquals('Id:id', $widget->renderAttr($widget->attributes[0], 0));
-        $this->assertEquals('Id:1', $widget->renderAttr($widget->attributes[1], 1));
-        $this->assertEquals('Id:1', $widget->renderAttr($widget->attributes[2], 2));
-        $this->assertEquals('Id:Displayed id', $widget->renderAttr($widget->attributes[3], 3));
-        $this->assertEquals('Id:Displayed id', $widget->renderAttr($widget->attributes[4], 4));
+        $this->assertEquals('Id:123', $widget->renderAttr($widget->getAttributes()[0], 0));
+        $this->assertEquals('Id:1', $widget->renderAttr($widget->getAttributes()[1], 1));
+        $this->assertEquals('Id:1', $widget->renderAttr($widget->getAttributes()[2], 2));
+        $this->assertEquals('Id:Displayed 123', $widget->renderAttr($widget->getAttributes()[3], 3));
+        $this->assertEquals('Id:Displayed 123', $widget->renderAttr($widget->getAttributes()[4], 4));
         $this->assertEquals(2, $model->getDisplayedIdCallCount());
     }
 
     /**
      * @see https://github.com/yiisoft/yii2/issues/13243
      */
-    public function testUnicodeAttributeNames()
+    public function testUnicodeAttributeNames(): void
     {
         $model = new UnicodeAttributesModelMock();
         $model->ИдентификаторТовара = 'A00001';
@@ -72,18 +72,18 @@ class DetailViewTest extends TestCase
 
         $this->assertEquals(
             'Идентификатор Товара:A00001',
-            $widget->renderAttr($widget->attributes[0], 0)
+            $widget->renderAttr($widget->getAttributes()[0], 0)
         );
         $this->assertEquals(
             'Το Αναγνωριστικό Του:A00002',
-            $widget->renderAttr($widget->attributes[1], 1)
+            $widget->renderAttr($widget->getAttributes()[1], 1)
         );
     }
 
-    public function testAttributeVisible()
+    public function testAttributeVisible(): void
     {
         $model = new ModelMock();
-        $model->id = 'id';
+        $model->id = 123;
 
         $widget = PublicDetailView::widget()
             ->withModel($model)
@@ -106,20 +106,20 @@ class DetailViewTest extends TestCase
                     ],
                     [
                         'attribute' => 'id',
-                        'value' => function (ModelMock $model) {
+                        'value' => static function (ModelMock $model) {
                             return $model->getDisplayedId();
                         },
                     ],
                     [
                         'attribute' => 'id',
-                        'value' => function (ModelMock $model) {
+                        'value' => static function (ModelMock $model) {
                             return $model->getDisplayedId();
                         },
                         'visible' => false,
                     ],
                     [
                         'attribute' => 'id',
-                        'value' => function (ModelMock $model) {
+                        'value' => static function (ModelMock $model) {
                             return $model->getDisplayedId();
                         },
                         'visible' => true,
@@ -133,40 +133,40 @@ class DetailViewTest extends TestCase
                     'attribute' => 'id',
                     'format' => 'text',
                     'label' => 'Id',
-                    'value' => 'Displayed id',
+                    'value' => 'Displayed 123',
                 ],
                 2 => [
                     'attribute' => 'id',
                     'format' => 'text',
                     'label' => 'Id',
-                    'value' => 'Displayed id',
+                    'value' => 'Displayed 123',
                     'visible' => true,
                 ],
                 3 => [
                     'attribute' => 'id',
                     'format' => 'text',
                     'label' => 'Id',
-                    'value' => 'Displayed id',
+                    'value' => 'Displayed 123',
                 ],
                 5 => [
                     'attribute' => 'id',
                     'format' => 'text',
                     'label' => 'Id',
-                    'value' => 'Displayed id',
+                    'value' => 'Displayed 123',
                     'visible' => true,
                 ],
             ],
-            $widget->attributes
+            $widget->getAttributes()
         );
         $this->assertEquals(5, $model->getDisplayedIdCallCount());
     }
 
-    public function testRelationAttribute()
+    public function testRelationAttribute(): void
     {
         $model = new ModelMock();
-        $model->id = 'model';
-        $model->related = new ModelMock();
-        $model->related->id = 'related';
+        $model->id = 123;
+        $model->setRelated(new ModelMock());
+        $model->getRelated()->id = 456;
 
         $widget = PublicDetailView::widget()
             ->withModel($model)
@@ -174,18 +174,18 @@ class DetailViewTest extends TestCase
             ->withAttributes(
                 [
                     'id',
-                    'related.id',
+                    '_related.id',
                 ]
             );
 
-        $this->assertEquals('Id:model', $widget->renderAttr($widget->attributes[0], 0));
+        $this->assertEquals('Id:123', $widget->renderAttr($widget->getAttributes()[0], 0));
         $this->assertEquals(
-            'Related Id:related',
-            $widget->renderAttr($widget->attributes[1], 1)
+            'Related Id:456',
+            $widget->renderAttr($widget->getAttributes()[1], 1)
         );
 
         // test null relation
-        $model->related = null;
+        $model->setRelated(null);
 
         $widget = PublicDetailView::widget()
             ->withModel($model)
@@ -193,104 +193,106 @@ class DetailViewTest extends TestCase
             ->withAttributes(
                 [
                     'id',
-                    'related.id',
+                    '_related.id',
                 ]
             );
 
-        $this->assertEquals('Id:model', $widget->renderAttr($widget->attributes[0], 0));
+        $this->assertEquals('Id:123', $widget->renderAttr($widget->getAttributes()[0], 0));
         $this->markTestIncomplete('Needs to implement null-value');
         $this->assertEquals(
             'Related Id:<span class="not-set">(not set)</span>',
-            $widget->renderAttr($widget->attributes[1], 1)
+            $widget->renderAttr($widget->getAttributes()[1], 1)
         );
     }
 
-    public function testArrayableModel()
+    /**
+     * @dataProvider modelsProvider()
+     * @param array $expectedValue
+     * @param $model
+     * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException
+     */
+    public function testArrayModel(array $expectedValue, $model): void
     {
-        $expectedValue = [
-            [
-                'attribute' => 'id',
-                'format' => 'text',
-                'label' => 'Id',
-                'value' => 1,
-            ],
-            [
-                'attribute' => 'text',
-                'format' => 'text',
-                'label' => 'Text',
-                'value' => 'I`m arrayable',
-            ],
-        ];
-
-        $model = new ArrayableInterfaceMock();
-        $model->id = 1;
-        $model->text = 'I`m arrayable';
-
         $widget = PublicDetailView::widget()
-            ->withModel($model)
+            ->withModel(is_callable($model) ? $model() : $model)
             ->init();
 
-        $this->assertEquals($expectedValue, $widget->attributes);
+        $this->assertEquals($expectedValue, $widget->getAttributes());
     }
 
-    public function testObjectModel()
+    public function modelsProvider(): array
     {
-        $expectedValue = [
-            [
-                'attribute' => 'id',
-                'format' => 'text',
-                'label' => 'Id',
-                'value' => 1,
+        return [
+            'Array Model' => [
+                [
+                    [
+                        'attribute' => 'id',
+                        'format' => 'text',
+                        'label' => 'Id',
+                        'value' => 1,
+                    ],
+                    [
+                        'attribute' => 'text',
+                        'format' => 'text',
+                        'label' => 'Text',
+                        'value' => 'I`m an array',
+                    ],
+                ],
+                [
+                    'id' => 1,
+                    'text' => 'I`m an array',
+                ],
             ],
-            [
-                'attribute' => 'text',
-                'format' => 'text',
-                'label' => 'Text',
-                'value' => 'I`m an object',
+            'Object Model' => [
+                [
+                    [
+                        'attribute' => 'id',
+                        'format' => 'text',
+                        'label' => 'Id',
+                        'value' => 1,
+                    ],
+                    [
+                        'attribute' => 'text',
+                        'format' => 'text',
+                        'label' => 'Text',
+                        'value' => 'I`m an object',
+                    ],
+                ],
+                static function () {
+                    $model = new ModelMock();
+                    $model->id = 1;
+                    $model->text = 'I`m an object';
+
+                    return $model;
+                },
+            ],
+            'Arrayble Model' => [
+                [
+                    [
+                        'attribute' => 'id',
+                        'format' => 'text',
+                        'label' => 'Id',
+                        'value' => 1,
+                    ],
+                    [
+                        'attribute' => 'text',
+                        'format' => 'text',
+                        'label' => 'Text',
+                        'value' => 'I`m arrayable',
+                    ],
+                ],
+                static function () {
+                    $model = new ArrayableInterfaceMock();
+                    $model->id = 1;
+                    $model->text = 'I`m arrayable';
+
+                    return $model;
+                },
             ],
         ];
-
-        $model = new ModelMock();
-        $model->id = 1;
-        $model->text = 'I`m an object';
-
-        $widget = PublicDetailView::widget()
-            ->withModel($model)
-            ->init();
-
-        $this->assertEquals($expectedValue, $widget->attributes);
     }
 
-    public function testArrayModel()
-    {
-        $expectedValue = [
-            [
-                'attribute' => 'id',
-                'format' => 'text',
-                'label' => 'Id',
-                'value' => 1,
-            ],
-            [
-                'attribute' => 'text',
-                'format' => 'text',
-                'label' => 'Text',
-                'value' => 'I`m an array',
-            ],
-        ];
-
-        $model = [
-            'id' => 1,
-            'text' => 'I`m an array',
-        ];
-
-        $widget = PublicDetailView::widget()
-            ->withModel($model)
-            ->init();
-
-        $this->assertEquals($expectedValue, $widget->attributes);
-    }
-
-    public function testOptionsTags()
+    public function testOptionsTags(): void
     {
         $expectedValue = '<tr><th tooltip="Tooltip">Text</th><td class="bg-red">I`m an array</td></tr>';
 
@@ -311,7 +313,7 @@ class DetailViewTest extends TestCase
                 ]
             );
 
-        foreach ($widget->attributes as $index => $attribute) {
+        foreach ($widget->getAttributes() as $index => $attribute) {
             $a = $widget->renderAttr($attribute, $index);
             $this->assertEquals($expectedValue, $a);
         }
@@ -320,7 +322,7 @@ class DetailViewTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         $model = new ModelMock();
@@ -358,30 +360,30 @@ class ArrayableInterfaceMock implements ArrayableInterface
  */
 class ModelMock
 {
-    public $id;
-    public $text;
+    public ?int $id;
+    public ?string $text;
 
-    private $_related;
-    private $_displayedIdCallCount = 0;
+    public ?object $_related;
+    private int $_displayedIdCallCount = 0;
 
     public function getRelated()
     {
         return $this->_related;
     }
 
-    public function setRelated($related)
+    public function setRelated($related): void
     {
         $this->_related = $related;
     }
 
-    public function getDisplayedId()
+    public function getDisplayedId(): string
     {
         $this->_displayedIdCallCount++;
 
         return "Displayed $this->id";
     }
 
-    public function getDisplayedIdCallCount()
+    public function getDisplayedIdCallCount(): int
     {
         return $this->_displayedIdCallCount;
     }

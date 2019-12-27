@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView\Columns;
 
@@ -21,21 +16,12 @@ namespace Yiisoft\Yii\DataView\Columns;
  * ```
  * For more details and usage information on SerialColumn, see the [guide article on data
  * widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class SerialColumn extends Column
 {
-    /**
-     * {@inheritdoc}
-     */
     public string $header = '#';
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function renderDataCellContent($model, $key, $index)
+    protected function renderDataCellContent($model, $key, $index): string
     {
         $dataReader = $this->grid->dataReader;
         if ($dataReader !== null) {

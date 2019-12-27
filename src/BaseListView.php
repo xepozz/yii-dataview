@@ -39,7 +39,7 @@ abstract class BaseListView
      *            The "tag" element specifies the tag name of the container element and defaults to "div".
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = [];
+    public array $options = [];
     /**
      * @var DataReaderInterface|SortableDataInterface|FilterableDataInterface|OffsetableDataInterface|CountableDataInterface
      *     the data provider for the view. This property is required.
@@ -96,7 +96,7 @@ abstract class BaseListView
      * @see showOnEmpty
      * @see emptyTextOptions
      */
-    protected string $emptyText = 'No results found.';
+    protected ?string $emptyText = 'No results found.';
     private bool $showEmptyText = true;
     /**
      * @var array the HTML attributes for the emptyText of the list view.
@@ -127,6 +127,17 @@ abstract class BaseListView
     private static Aliases $aliases;
 
     /**
+     * @param bool $value
+     * @return \Yiisoft\Yii\DataView\BaseListView
+     */
+    public function showEmptyText(bool $value): self
+    {
+        $this->showEmptyText = $value;
+
+        return $this;
+    }
+
+    /**
      * @return \Yiisoft\Aliases\Aliases
      */
     protected function getAliases(): Aliases
@@ -139,7 +150,7 @@ abstract class BaseListView
      *
      * @return string the rendering result.
      */
-    abstract public function renderItems();
+    abstract public function renderItems(): string;
 
     public function __construct(MessageFormatterInterface $messageFormatter, View $view, Aliases $aliases)
     {
@@ -203,7 +214,7 @@ abstract class BaseListView
      * @param string $name the section name, e.g., `{summary}`, `{items}`.
      * @return string|bool the rendering result of the section, or false if the named section is not supported.
      */
-    public function renderSection($name)
+    public function renderSection($name): string
     {
         switch ($name) {
             case '{summary}':
@@ -225,7 +236,7 @@ abstract class BaseListView
      * @return string the rendering result
      * @see withEmptyText
      */
-    public function renderEmpty()
+    public function renderEmpty(): string
     {
         if (!$this->showEmptyText) {
             return '';
@@ -239,7 +250,7 @@ abstract class BaseListView
     /**
      * Renders the summary text.
      */
-    public function renderSummary()
+    public function renderSummary(): string
     {
         $count = $this->dataReader->count();
         if ($count <= 0) {
@@ -378,16 +389,6 @@ abstract class BaseListView
         }
 
         return $this;
-    }
-
-    public function disableEmptyText(): void
-    {
-        $this->showEmptyText = false;
-    }
-
-    public function enableEmptyText(): void
-    {
-        $this->showEmptyText = true;
     }
 
     /**

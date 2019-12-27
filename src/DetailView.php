@@ -1,12 +1,8 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView;
 
+use Closure;
 use Yiisoft\Arrays\ArrayableInterface;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
@@ -38,9 +34,6 @@ use Yiisoft\Strings\Inflector;
  * ```
  * For more details and usage information on DetailView, see the [guide article on data
  * widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class DetailView
 {
@@ -78,7 +71,7 @@ class DetailView
      * - `captionOptions`: the HTML attributes to customize label tag. For example: `['class' => 'bg-red']`.
      *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
      */
-    public array $attributes = [];
+    protected array $attributes = [];
     /**
      * @var string|callable the template used to render a single attribute. If a string, the token `{label}`
      *                      and `{value}` will be replaced with the label and the value of the corresponding attribute.
@@ -91,18 +84,18 @@ class DetailView
      * Since Version 2.0.10, the tokens `{captionOptions}` and `{contentOptions}` are available, which will represent
      * HTML attributes of HTML container elements for the label and value.
      */
-    public $template = '<tr><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>';
+    protected $template = '<tr><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>';
     /**
      * @var array the HTML attributes for the container tag of this widget. The `tag` option specifies
      *            what container tag should be used. It defaults to `table` if not set.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public array $options = ['class' => 'table table-striped table-bordered detail-view'];
+    protected array $options = ['class' => 'table table-striped table-bordered detail-view'];
     /**
      * @var \Yiisoft\I18n\MessageFormatterInterface the formatter used to format model attribute values into
      *     displayable texts.
      */
-    public static MessageFormatterInterface $messageFormatter;
+    protected static MessageFormatterInterface $messageFormatter;
 
     public function __construct(MessageFormatterInterface $formatter)
     {
@@ -212,6 +205,7 @@ class DetailView
                         'The attribute must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"'
                     );
                 }
+
                 $attribute = [
                     'attribute' => $matches[1],
                     'format' => $matches[3] ?? 'text',
@@ -236,9 +230,9 @@ class DetailView
                 if (!isset($attribute['label'])) {
                     $inflector = new Inflector();
 
-                    $attribute['label'] = $this->model instanceof Model ? $this->model->getAttributeLabel(
-                        $attributeName
-                    ) : $inflector->camel2words($attributeName, true);
+                    $attribute['label'] = $this->model instanceof Model
+                        ? $this->model->getAttributeLabel($attributeName)
+                        : $inflector->camel2words($attributeName, true);
                 }
                 if (!array_key_exists('value', $attribute)) {
                     $attribute['value'] = ArrayHelper::getValue($this->model, $attributeName);
@@ -249,7 +243,7 @@ class DetailView
                 );
             }
 
-            if ($attribute['value'] instanceof \Closure) {
+            if ($attribute['value'] instanceof Closure) {
                 $attribute['value'] = call_user_func($attribute['value'], $this->model, $this);
             }
 
@@ -281,5 +275,10 @@ class DetailView
         $this->normalizeAttributes();
 
         return $this;
+    }
+
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 }

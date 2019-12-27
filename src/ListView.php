@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView;
 
@@ -18,9 +13,6 @@ use Yiisoft\View\ViewContextInterface;
  * specified.
  * For more details and usage information on ListView, see the [guide article on data
  * widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class ListView extends BaseListView implements ViewContextInterface
 {
@@ -56,19 +48,19 @@ class ListView extends BaseListView implements ViewContextInterface
      * @var array additional parameters to be passed to [[itemView]] when it is being rendered.
      *            This property is used only when [[itemView]] is a string representing a view name.
      */
-    public $viewParams = [];
+    public array $viewParams = [];
     /**
      * @var string the HTML code to be displayed between any two consecutive items.
      */
-    public $separator = "\n";
+    public string $separator = "\n";
     /**
      * @var array the HTML attributes for the container tag of the list view.
      *            The "tag" element specifies the tag name of the container element and defaults to "div".
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = ['class' => 'list-view'];
+    public array $options = ['class' => 'list-view'];
     /**
-     * @var Closure an anonymous function that is called once BEFORE rendering each data model.
+     * @var \Closure|null ?Closure an anonymous function that is called once BEFORE rendering each data model.
      *              It should have the following signature:
      * ```php
      * function ($model, $key, $index, $widget)
@@ -82,16 +74,16 @@ class ListView extends BaseListView implements ViewContextInterface
      * @see renderBeforeItem
      * @since 2.0.11
      */
-    public $beforeItem;
+    public ?Closure $beforeItem;
     /**
-     * @var Closure an anonymous function that is called once AFTER rendering each data model.
+     * @var \Closure|null ?Closure an anonymous function that is called once AFTER rendering each data model.
      * It should have the same signature as [[beforeItem]].
      * The return result of the function will be rendered directly.
      * Note: If the function returns `null`, nothing will be rendered after the item.
      * @see renderAfterItem
      * @since 2.0.11
      */
-    public $afterItem;
+    public ?Closure $afterItem;
 
     /**
      * Renders all data models.
@@ -99,7 +91,7 @@ class ListView extends BaseListView implements ViewContextInterface
      * @return string the rendering result
      * @throws \Throwable
      */
-    public function renderItems()
+    public function renderItems(): string
     {
         $models = $this->dataReader->read();
         $keys = array_keys($models);

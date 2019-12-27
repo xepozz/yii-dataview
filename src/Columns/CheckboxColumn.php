@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView\Columns;
 
@@ -33,9 +28,6 @@ use Yiisoft\Json\Json;
  * ```
  * For more details and usage information on CheckboxColumn, see the [guide article on data
  * widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class CheckboxColumn extends Column
 {
@@ -126,7 +118,7 @@ class CheckboxColumn extends Column
      *
      * @return string the rendering result
      */
-    protected function renderHeaderCellContent()
+    protected function renderHeaderCellContent(): string
     {
         if ($this->header !== null || !$this->multiple) {
             return parent::renderHeaderCellContent();
@@ -135,10 +127,8 @@ class CheckboxColumn extends Column
         return Html::checkbox($this->getHeaderCheckBoxName(), false, ['class' => 'select-on-check-all']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function renderDataCellContent($model, $key, $index)
+
+    protected function renderDataCellContent($model, $key, $index): string
     {
         if ($this->content !== null) {
             return parent::renderDataCellContent($model, $key, $index);
@@ -187,7 +177,7 @@ class CheckboxColumn extends Column
      *
      * @since 2.0.8
      */
-    public function registerClientScript()
+    public function registerClientScript(): string
     {
         $id = $this->grid->options['id'];
         $options = Json::encode(

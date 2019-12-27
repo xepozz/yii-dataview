@@ -13,6 +13,7 @@ use yii\helpers\Yii;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
+use Yiisoft\I18n\MessageFormatterInterface;
 use Yiisoft\Json\Json;
 use Yiisoft\Yii\DataView\Columns\Column;
 use Yiisoft\Yii\DataView\Columns\DataColumn;
@@ -51,7 +52,7 @@ class GridView extends BaseListView
      * @var string the default data column class if the class name is not explicitly specified when configuring a data
      *     column. Defaults to 'yii\grid\DataColumn'.
      */
-    public $dataColumnClass = DataColumn::class;
+    public string $dataColumnClass = DataColumn::class;
     /**
      * @var string the caption of the grid table
      * @see captionOptions
@@ -62,33 +63,33 @@ class GridView extends BaseListView
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      * @see caption
      */
-    public $captionOptions = [];
+    public array $captionOptions = [];
     /**
      * @var array the HTML attributes for the grid table element.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $tableOptions = ['class' => 'table table-striped table-bordered'];
+    public array $tableOptions = ['class' => 'table table-striped table-bordered'];
     /**
      * @var array the HTML attributes for the grid thead element.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $headOptions = [];
+    public array $headOptions = [];
     /**
      * @var array the HTML attributes for the container tag of the grid view.
      *            The "tag" element specifies the tag name of the container element and defaults to "div".
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = ['class' => 'grid-view'];
+    public array $options = ['class' => 'grid-view'];
     /**
      * @var array the HTML attributes for the table header row.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $headerRowOptions = [];
+    public array $headerRowOptions = [];
     /**
      * @var array the HTML attributes for the table footer row.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $footerRowOptions = [];
+    public array $footerRowOptions = [];
     /**
      * @var array|Closure the HTML attributes for the table body rows. This can be either an array
      *                    specifying the common HTML attributes for all body rows, or an anonymous function that
@@ -137,7 +138,7 @@ class GridView extends BaseListView
      * @var \Yiisoft\I18n\MessageFormatterInterface the formatter used to format model attribute values into
      *     displayable texts.
      */
-    public $messageFormatter;
+    protected MessageFormatterInterface $messageFormatter;
     /**
      * @var array grid column configuration. Each array element represents the configuration
      *            for one particular grid column. For example,
@@ -179,14 +180,14 @@ class GridView extends BaseListView
      * ]
      * ```
      */
-    public $columns = [];
+    protected array $columns = [];
     /**
      * @var string the HTML display when the content of a cell is empty.
      *             This property is used to render cells that have no defined content,
      *             e.g. empty footer or filter cells.
      * Note that this is not used by the [[DataColumn]] if a data item is `null`.
      */
-    public $emptyCell = '&nbsp;';
+    public string $emptyCell = '&nbsp;';
     /**
      * @var \yii\base\Model the model that keeps the user-entered filter data. When this property is set,
      *                      the grid view will enable column-based filtering. Each data column by default will display
@@ -212,25 +213,26 @@ class GridView extends BaseListView
      * - [[FILTER_POS_BODY]]: the filters will be displayed right below each column's header cell.
      * - [[FILTER_POS_FOOTER]]: the filters will be displayed below each column's footer cell.
      */
-    public $filterPosition = self::FILTER_POS_BODY;
+    public string $filterPosition = self::FILTER_POS_BODY;
     /**
      * @var array the HTML attributes for the filter row element.
      * @see \Yiisoft\Html\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $filterRowOptions = ['class' => 'filters'];
+    public array $filterRowOptions = ['class' => 'filters'];
     /**
      * @var array the options for rendering the filter error summary.
      *            Please refer to [[Html::errorSummary()]] for more details about how to specify the options.
      * @see renderErrors()
      */
-    public $filterErrorSummaryOptions = ['class' => 'error-summary'];
+    public array $filterErrorSummaryOptions = ['class' => 'error-summary'];
     /**
      * @var array the options for rendering every filter error message.
      *            This is mainly used by [[Html::error()]] when rendering an error message next to every filter input
      *     field.
      */
-    public $filterErrorOptions = ['class' => 'help-block'];
+    public array $filterErrorOptions = ['class' => 'help-block'];
     /**
+     * TODO not used
      * @var string the layout that determines how different sections of the grid view should be organized.
      *             The following tokens will be replaced with the corresponding section contents:
      * - `{summary}`: the summary section. See [[renderSummary()]].
@@ -247,8 +249,9 @@ class GridView extends BaseListView
      */
     public function init(): self
     {
+        parent::init();
         if (!isset($this->filterRowOptions['id'])) {
-            $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
+            $this->filterRowOptions['id'] = ($this->options['id'] ?? $this->getId()) . '-filters';
         }
 
         $this->initColumns();
@@ -261,7 +264,7 @@ class GridView extends BaseListView
      *
      * @return string the rendering result.
      */
-    public function renderErrors()
+    public function renderErrors(): string
     {
         if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) {
             return Html::errorSummary($this->filterModel, $this->filterErrorSummaryOptions);
@@ -270,10 +273,7 @@ class GridView extends BaseListView
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function renderSection($name)
+    public function renderSection($name): string
     {
         switch ($name) {
             case '{errors}':
@@ -289,7 +289,7 @@ class GridView extends BaseListView
      * @return string the HTML code of table
      * @throws \JsonException
      */
-    public function renderItems()
+    public function renderItems(): string
     {
         $caption = $this->renderCaption();
         $columnGroup = $this->renderColumnGroup();
@@ -449,7 +449,7 @@ class GridView extends BaseListView
             }
         }
 
-        if (empty($rows) && $this->emptyText !== false) {
+        if (empty($rows) && $this->emptyText !== null) {
             $colspan = count($this->columns);
 
             return "<tbody>\n<tr><td colspan=\"$colspan\">" . $this->renderEmpty() . "</td></tr>\n</tbody>";
@@ -522,10 +522,8 @@ class GridView extends BaseListView
             );
         }
 
-        $columnClass = $this->dataColumnClass;
-
         /* @var DataColumn $widget */
-        $widget = $columnClass::widget();
+        $widget = ($this->dataColumnClass)::widget();
 
         return $widget->withGrid($this)
             ->withAttribute($matches[1])
@@ -591,5 +589,15 @@ class GridView extends BaseListView
         $this->columns = $columns;
 
         return $this;
+    }
+
+    public function getColumns(): array
+    {
+        return $this->columns;
+    }
+
+    public function getMessageFormatter(): MessageFormatterInterface
+    {
+        return $this->messageFormatter;
     }
 }

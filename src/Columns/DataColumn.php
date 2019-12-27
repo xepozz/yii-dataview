@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView\Columns;
 
@@ -24,9 +19,6 @@ use Yiisoft\Strings\Inflector;
  * value which may contain HTML markup.
  * For more details and usage information on DataColumn, see the [guide article on data
  * widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class DataColumn extends Column
 {
@@ -131,10 +123,7 @@ class DataColumn extends Column
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function renderHeaderCellContent()
+    protected function renderHeaderCellContent(): string
     {
         if ($this->header !== null || $this->label === null && $this->attribute === null) {
             return parent::renderHeaderCellContent();
@@ -153,11 +142,7 @@ class DataColumn extends Column
         return $label;
     }
 
-    /**
-     * {@inheritdoc].
-     * @since 2.0.8
-     */
-    protected function getHeaderCellLabel()
+    protected function getHeaderCellLabel(): string
     {
         $provider = $this->grid->dataReader;
 
@@ -191,10 +176,7 @@ class DataColumn extends Column
         return $label;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function renderFilterCellContent()
+    protected function renderFilterCellContent(): string
     {
         if (is_string($this->filter)) {
             return $this->filter;
@@ -225,8 +207,8 @@ class DataColumn extends Column
                         $model,
                         $this->attribute,
                         [
-                            1 => $this->grid->messageFormatter->booleanFormat[1],
-                            0 => $this->grid->messageFormatter->booleanFormat[0],
+                            1 => $this->grid->getMessageFormatter()->booleanFormat[1],
+                            0 => $this->grid->getMessageFormatter()->booleanFormat[0],
                         ],
                         $options
                     ) . $error;
@@ -261,13 +243,13 @@ class DataColumn extends Column
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function renderDataCellContent($model, $key, $index)
+    protected function renderDataCellContent($model, $key, $index): string
     {
         if ($this->content === null) {
-            return $this->grid->messageFormatter->format($this->getDataCellValue($model, $key, $index), $this->format);
+            return $this->grid->getMessageFormatter()->format(
+                $this->getDataCellValue($model, $key, $index),
+                $this->format
+            );
         }
 
         return parent::renderDataCellContent($model, $key, $index);

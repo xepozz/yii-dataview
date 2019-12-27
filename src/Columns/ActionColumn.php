@@ -1,14 +1,8 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView\Columns;
 
-use yii\helpers\Url;
-use yii\helpers\Yii;
+use Closure;
 use Yiisoft\Html\Html;
 
 /**
@@ -25,15 +19,9 @@ use Yiisoft\Html\Html;
  * ```
  * For more details and usage information on ActionColumn, see the [guide article on data
  * widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class ActionColumn extends Column
 {
-    /**
-     * {@inheritdoc}
-     */
     public array $headerOptions = ['class' => 'action-column'];
     /**
      * @var string the ID of the controller that should handle the actions specified here.
@@ -148,7 +136,7 @@ class ActionColumn extends Column
      * @param array $additionalOptions Array of additional options
      * @since 2.0.11
      */
-    protected function initDefaultButton($name, $iconName, $additionalOptions = [])
+    protected function initDefaultButton($name, $iconName, $additionalOptions = []): void
     {
         if (!isset($this->buttons[$name]) && strpos($this->template, '{' . $name . '}') !== false) {
             $this->buttons[$name] = function ($url, $model, $key) use ($name, $iconName, $additionalOptions) {
@@ -212,18 +200,15 @@ class ActionColumn extends Column
         return Url::toRoute($params);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function renderDataCellContent($model, $key, $index)
+    protected function renderDataCellContent($model, $key, $index): string
     {
         return preg_replace_callback(
-            '/\\{([\w\-\/]+)\\}/',
+            '/{([\w\-\/]+)}/',
             function ($matches) use ($model, $key, $index) {
                 $name = $matches[1];
 
                 if (isset($this->visibleButtons[$name])) {
-                    $isVisible = $this->visibleButtons[$name] instanceof \Closure
+                    $isVisible = $this->visibleButtons[$name] instanceof Closure
                         ? call_user_func($this->visibleButtons[$name], $model, $key, $index)
                         : $this->visibleButtons[$name];
                 } else {

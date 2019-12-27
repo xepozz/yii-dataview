@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView\Columns;
 
@@ -11,6 +6,7 @@ use Closure;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
+use Yiisoft\Json\Json;
 
 /**
  * RadioButtonColumn displays a column of radio buttons in a grid view.
@@ -29,16 +25,13 @@ use Yiisoft\Html\Html;
  *     ],
  * ]
  * ```
- *
- * @author Kirk Hansen <hanski07@luther.edu>
- * @since 2.0.11
  */
 class RadioButtonColumn extends Column
 {
     /**
      * @var string the name of the input radio button input fields.
      */
-    public $name = 'radioButtonSelection';
+    public string $name = 'radioButtonSelection';
     /**
      * @var array|\Closure the HTML attributes for the radio buttons. This can either be an array of
      *                     attributes or an anonymous function ([[Closure]]) returning such an array.
@@ -99,10 +92,7 @@ class RadioButtonColumn extends Column
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function renderDataCellContent($model, $key, $index)
+    protected function renderDataCellContent($model, $key, $index): string
     {
         if ($this->content !== null) {
             return parent::renderDataCellContent($model, $key, $index);
@@ -113,8 +103,7 @@ class RadioButtonColumn extends Column
         } else {
             $options = $this->radioOptions;
             if (!isset($options['value'])) {
-                $options['value'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
-                    : $key;
+                $options['value'] = is_array($key) ? Json::encode($key) : $key;
             }
         }
         $checked = $options['checked'] ?? false;

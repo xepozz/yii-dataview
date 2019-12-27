@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView\Tests;
 
@@ -12,35 +7,20 @@ use Yiisoft\Yii\DataView\Columns\DataColumn;
 use Yiisoft\Yii\DataView\GridView;
 
 /**
- * @author Evgeniy Tkachenko <et.coder@gmail.com>
  * @group grid
  */
 class GridViewTest extends TestCase
 {
-    /**
-     * @return array
-     */
-    public function emptyDataProvider()
-    {
-        return [
-            [null, '<tr><td colspan="0"><div class="empty">No results found.</div></td></tr>'],
-            ['Empty', '<tr><td colspan="0"><div class="empty">Empty</div></td></tr>'],
-            // https://github.com/yiisoft/yii2/issues/13352
-            [false, '<tr><td colspan="0"><div class="empty"></div></td></tr>'],
-        ];
-    }
-
     /**
      * @dataProvider emptyDataProvider
      * @param mixed $emptyText
      * @param string $expectedText
      * @throws \Exception
      */
-    public function testEmpty($emptyText, $expectedText)
+    public function testEmpty($emptyText, $expectedText): void
     {
-        $dataReader = $this->createDataReader([]);
         $html = GridView::widget()
-            ->withDataReader($dataReader)
+            ->withDataReader($this->createDataReader([]))
             ->withEmptyText($emptyText)
             ->withShowHeader(false)
             ->withTableOptions(
@@ -55,14 +35,24 @@ class GridViewTest extends TestCase
                 ]
             )
             ->run();
-        $html = preg_replace("/\r|\n/", '', $html);
 
+        $html = preg_replace("/\r|\n/", '', $html);
         $expectedHtml = "<div id=\"grid\"><table><tbody>{$expectedText}</tbody></table></div>";
 
         $this->assertEquals($expectedHtml, $html);
     }
 
-    public function testGuessColumns()
+    public function emptyDataProvider(): array
+    {
+        return [
+            [null, '<tr><td colspan="0"><div class="empty">No results found.</div></td></tr>'],
+            ['Empty', '<tr><td colspan="0"><div class="empty">Empty</div></td></tr>'],
+            // https://github.com/yiisoft/yii2/issues/13352
+            [false, '<tr><td colspan="0"><div class="empty"></div></td></tr>'],
+        ];
+    }
+
+    public function testGuessColumns(): void
     {
         $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
@@ -71,7 +61,7 @@ class GridViewTest extends TestCase
             ->withDataReader($dataReader)
             ->init();
 
-        $columns = $grid->columns;
+        $columns = $grid->getColumns();
         $this->assertCount(count($row), $columns);
 
         foreach ($columns as $index => $column) {
@@ -87,7 +77,7 @@ class GridViewTest extends TestCase
             ->withDataReader($dataReader)
             ->init();
 
-        $columns = $grid->columns;
+        $columns = $grid->getColumns();
         $this->assertCount(count($row) - 2, $columns);
 
         foreach ($columns as $index => $column) {
@@ -98,30 +88,37 @@ class GridViewTest extends TestCase
         }
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function testFooter()
+    public function testFooterBeforeBody(): void
     {
-        $dataReader = $this->createDataReader([]);
-        $widget = GridView::widget()
-            ->withDataReader($dataReader)
+        $html = GridView::widget()
+            ->withDataReader($this->createDataReader([]))
             ->withShowFooter(true)
             ->withOptions(
                 [
                     'id' => false,
                     'class' => false,
                 ]
-            );
-        $html = $widget->run();
+            )
+            ->run();
         $html = preg_replace("/\r|\n/", '', $html);
 
         $this->assertRegExp("/<\/tfoot><tbody>/", $html);
+    }
 
-        $widget = (clone $widget)
-            ->withPlaceFooterAfterBody(true);
+    public function testFooterAfterBody(): void
+    {
+        $html = GridView::widget()
+            ->withDataReader($this->createDataReader([]))
+            ->withShowFooter(true)
+            ->withOptions(
+                [
+                    'id' => false,
+                    'class' => false,
+                ]
+            )
+            ->withPlaceFooterAfterBody(true)
+            ->run();
 
-        $html = $widget->run();
         $html = preg_replace("/\r|\n/", '', $html);
 
         $this->assertRegExp("/<\/tbody><tfoot>/", $html);

@@ -16,7 +16,7 @@ use Yiisoft\Yii\DataView\ListView;
  */
 class ListViewTest extends TestCase
 {
-    public function testEmptyListShown()
+    public function testEmptyListShown(): void
     {
         $dataReader = $this->createDataReader([]);
         $listView = $this->getListView($dataReader, new OffsetPaginator($dataReader));
@@ -25,30 +25,28 @@ class ListViewTest extends TestCase
         $this->assertEquals('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
     }
 
-    public function testEmpty()
-    {
-        $listView = $this->getListView($this->createDataReader([]), null);
-        $listView->disableEmptyText();
-        $out = $listView->run();
-
-        $this->assertEquals('<div id="w0" class="list-view"></div>', $out);
-    }
-
-    public function testEmptyListNotShown()
+    public function testEmptyListNotShown(): void
     {
         $listView = $this->getListView($this->createDataReader([]), null);
         $out = $listView->run();
 
         $this->assertEquals(
-            <<<'HTML'
-<div id="w0" class="list-view"><div class="empty">No results found.</div></div>
-HTML
+            '<div id="w0" class="list-view"><div class="empty">No results found.</div></div>'
             ,
             $out
         );
     }
 
-    public function testSimplyListView()
+    public function testEmpty(): void
+    {
+        $out = $this->getListView($this->createDataReader([]), null)
+            ->showEmptyText(false)
+            ->run();
+
+        $this->assertEquals('<div id="w0" class="list-view"></div>', $out);
+    }
+
+    public function testSimplyListView(): void
     {
         $dataReader = $this->createDataReader([0, 1, 2]);
         $listView = $this->getListView($dataReader, null);
@@ -68,7 +66,7 @@ HTML
         );
     }
 
-    public function testWidgetOptions()
+    public function testWidgetOptions(): void
     {
         $dataReader = $this->createDataReader([0, 1, 2]);
         $listView = $this->getListView($dataReader, null);
@@ -87,7 +85,7 @@ HTML
         );
     }
 
-    public function itemViewOptions()
+    public function itemViewOptions(): array
     {
         return [
             [
@@ -99,7 +97,7 @@ HTML
 </div>',
             ],
             [
-                function ($model, $key, $index, $widget) {
+                static function ($model, $key, $index, $widget) {
                     return "Item #{$index}: {$model['login']} - Widget: " . get_class($widget);
                 },
                 '<div id="w0" class="list-view"><div class="summary">Total <b>{count, number}</b> {count, plural, one{item} other{items}}.</div>
@@ -124,7 +122,7 @@ HTML
      * @param mixed $itemView
      * @param string $expected
      */
-    public function testItemViewOptions($itemView, $expected)
+    public function testItemViewOptions($itemView, $expected): void
     {
         $dataReader = $this->createDataReader(
             [
@@ -139,7 +137,7 @@ HTML
         $this->assertEquals($expected, $out);
     }
 
-    public function itemOptions()
+    public function itemOptions(): array
     {
         return [
             [
@@ -151,7 +149,7 @@ HTML
 </div>',
             ],
             [
-                function ($model, $key, $index, $widget) {
+                static function ($model, $key, $index) {
                     return [
                         'tag' => 'span',
                         'data' => [
@@ -177,7 +175,7 @@ HTML
      * @param mixed $itemOptions
      * @param string $expected
      */
-    public function testItemOptions($itemOptions, $expected)
+    public function testItemOptions($itemOptions, $expected): void
     {
         $dataReader = $this->createDataReader(
             [
@@ -193,9 +191,9 @@ HTML
         $this->assertEquals($expected, $out);
     }
 
-    public function testBeforeAndAfterItem()
+    public function testBeforeAndAfterItem(): void
     {
-        $before = function ($model, $key, $index, $widget) {
+        $before = static function ($model, $key, $index, $widget) {
             $widget = get_class($widget);
 
             return "<!-- before: {$model['id']}, key: $key, index: $index, widget: $widget -->";
@@ -243,7 +241,7 @@ HTML
     /**
      * @see https://github.com/yiisoft/yii2/pull/14596
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $this->markTestIncomplete();
         $dataReader = $this->createDataReader([0, 1, 2]);
@@ -260,7 +258,7 @@ HTML
         $this->assertTrue($initTriggered);
     }
 
-    private function createDataReader(array $models)
+    private function createDataReader(array $models): IterableDataReader
     {
         return new IterableDataReader($models);
     }

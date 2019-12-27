@@ -350,9 +350,9 @@ class ArrayableInterfaceMock implements ArrayableInterface
 {
     use ArrayableTrait;
 
-    public $id;
+    public int $id;
 
-    public $text;
+    public string $text;
 }
 
 /**

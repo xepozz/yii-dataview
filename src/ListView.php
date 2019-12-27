@@ -122,7 +122,7 @@ class ListView extends BaseListView implements ViewContextInterface
      * @return string|null [[beforeItem]] call result or `null` when [[beforeItem]] is not a closure
      * @see beforeItem
      */
-    protected function renderBeforeItem($model, $key, $index)
+    protected function renderBeforeItem($model, $key, $index): ?string
     {
         if ($this->beforeItem instanceof Closure) {
             return call_user_func($this->beforeItem, $model, $key, $index, $this);
@@ -142,7 +142,7 @@ class ListView extends BaseListView implements ViewContextInterface
      * @see afterItem
      * @since 2.0.11
      */
-    protected function renderAfterItem($model, $key, $index)
+    protected function renderAfterItem($model, $key, $index): ?string
     {
         if ($this->afterItem instanceof Closure) {
             return call_user_func($this->afterItem, $model, $key, $index, $this);
@@ -160,7 +160,7 @@ class ListView extends BaseListView implements ViewContextInterface
      * @return string the rendering result
      * @throws \Throwable
      */
-    public function renderItem($model, $key, $index)
+    public function renderItem($model, $key, $index): string
     {
         if ($this->itemView === null) {
             $content = $key;

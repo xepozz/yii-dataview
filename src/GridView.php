@@ -1,15 +1,8 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView;
 
 use Closure;
-use yii\base\Model;
-use yii\helpers\Yii;
 use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
@@ -38,9 +31,6 @@ use Yiisoft\Yii\DataView\Columns\DataColumn;
  * The look and feel of a grid view can be customized using the large amount of properties.
  * For more details and usage information on GridView, see the [guide article on data
  * widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 class GridView extends BaseListView
 {
@@ -246,6 +236,8 @@ class GridView extends BaseListView
     /**
      * Initializes the grid view.
      * This method will initialize required property values and instantiate [[columns]] objects.
+     *
+     * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException
      */
     public function init(): self
     {

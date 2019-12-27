@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace Yiisoft\Yii\DataView;
 
@@ -28,9 +23,6 @@ use Yiisoft\Yii\DataView\Widget\LinkSorter;
  * It provides features like sorting, paging and also filtering the data.
  * For more details and usage information on BaseListView, see the [guide article on data
  * widgets](guide:output-data-widgets).
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 abstract class BaseListView
 {
@@ -372,7 +364,7 @@ abstract class BaseListView
     }
 
 //    abstract public function getId();
-    public function getId()
+    public function getId(): int
     {
         return rand(1, 10);
     }

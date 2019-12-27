@@ -1,36 +1,29 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace Yiisoft\Yii\DataView\Tests\Coolumns;
+namespace Yiisoft\Yii\DataView\Tests\Columns;
 
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
+use Yiisoft\Factory\Exceptions\InvalidConfigException;
 use Yiisoft\Html\Html;
 use Yiisoft\Yii\DataView\Columns\RadioButtonColumn;
 use Yiisoft\Yii\DataView\GridView;
 use Yiisoft\Yii\DataView\Tests\TestCase;
 
 /**
- * Class RadiobuttonColumnTest.
- *
  * @group grid
- * @since 2.0.11
  */
 class RadiobuttonColumnTest extends TestCase
 {
-    public function testException()
+    public function testException(): void
     {
-        $this->expectException(\Yiisoft\Factory\Exceptions\InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $this->expectErrorMessage('The "name" property must be set.');
         RadioButtonColumn::widget()
             ->withName('')
             ->init();
     }
 
-    public function testOptionsByArray()
+    public function testOptionsByArray(): void
     {
         $column = RadioButtonColumn::widget()
             ->withRadioOptions(
@@ -44,7 +37,7 @@ class RadiobuttonColumnTest extends TestCase
         );
     }
 
-    public function testOptionsByCallback()
+    public function testOptionsByCallback(): void
     {
         $model = [
             'label' => 'label',
@@ -52,7 +45,7 @@ class RadiobuttonColumnTest extends TestCase
         ];
         $column = RadioButtonColumn::widget()
             ->withRadioOptions(
-                function ($model) {
+                static function ($model) {
                     return [
                         'value' => $model['value'],
                     ];
@@ -65,11 +58,11 @@ class RadiobuttonColumnTest extends TestCase
         );
     }
 
-    public function testContent()
+    public function testContent(): void
     {
         $column = RadioButtonColumn::widget()
             ->withContent(
-                function ($model, $key, $index, $column) {
+                static function ($model, $key, $index, $column) {
                     return '';
                 },
                 );
@@ -84,7 +77,7 @@ class RadiobuttonColumnTest extends TestCase
         $this->assertStringContainsString(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
     }
 
-    public function testMultipleInGrid()
+    public function testMultipleInGrid(): void
     {
         $this->markTestIncomplete();
         $models = [
@@ -103,14 +96,14 @@ class RadiobuttonColumnTest extends TestCase
                             static function ($model) {
                                 return [
                                     'value' => $model['value'],
-                                    'checked' => $model['value'] == 2,
+                                    'checked' => $model['value'] === 2,
                                 ];
                             }
                         ),
                 ]
             );
         $actual = $widget->run();
-        $this->assertEqualsWithoutLE(
+        $this->assertEquals(
             <<<'HTML'
 <div id="radio-gridview"><div class="summary">Showing <b>1-2</b> of <b>2</b> items.</div>
 <table class="table table-striped table-bordered"><thead>

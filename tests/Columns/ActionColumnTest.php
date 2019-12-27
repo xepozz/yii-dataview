@@ -1,22 +1,16 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace Yiisoft\Yii\DataView\Tests\Coolumns;
+namespace Yiisoft\Yii\DataView\Tests\Columns;
 
 use Yiisoft\Yii\DataView\Columns\ActionColumn;
 use Yiisoft\Yii\DataView\Tests\TestCase;
 
 /**
- * @author Vitaly S. <fornit1917@gmail.com>
  * @group grid
  */
 class ActionColumnTest extends TestCase
 {
-    public function testInit()
+    public function testInit(): void
     {
         $column = ActionColumn::widget()
             ->init();
@@ -43,7 +37,7 @@ class ActionColumnTest extends TestCase
         $this->assertEquals(['view'], array_keys($column->buttons));
     }
 
-    public function testRenderDataCell()
+    public function testRenderDataCell(): void
     {
         $column = ActionColumn::widget()
             ->init();
@@ -59,12 +53,12 @@ class ActionColumnTest extends TestCase
 
         $column = ActionColumn::widget()
             ->init();
-        $column->urlCreator = function ($model, $key, $index) {
+        $column->urlCreator = static function ($model, $key, $index) {
             return 'http://test.com';
         };
         $column->template = '{update}';
         $column->buttons = [
-            'update' => function ($url, $model, $key) {
+            'update' => static function ($url, $model, $key) {
                 return 'update_button';
             },
         ];
@@ -82,8 +76,8 @@ class ActionColumnTest extends TestCase
 
         //test visible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function ($model, $key, $index) {
-                return $model['id'] == 1;
+            'update' => static function ($model, $key, $index) {
+                return $model['id'] === 1;
             },
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
@@ -98,8 +92,8 @@ class ActionColumnTest extends TestCase
 
         //test invisible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function ($model, $key, $index) {
-                return $model['id'] != 1;
+            'update' => static function ($model, $key, $index) {
+                return $model['id'] !== 1;
             },
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);

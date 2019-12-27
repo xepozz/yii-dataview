@@ -18,28 +18,28 @@ class LinkSorter extends Widget
     /**
      * @var \Yiisoft\Data\Reader\Sort the sort definition
      */
-    public $sort;
+    public Sort $sort;
     /**
      * @var array list of the attributes that support sorting. If not set, it will be determined
      *            using [[Sort::attributes]].
      */
-    public $attributes;
+    public array $attributes = [];
     /**
      * @var array HTML attributes for the sorter container tag.
-     *
      * @see Html::ul() for special attributes.
      * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = ['class' => 'sorter'];
+    public array $options = ['class' => 'sorter'];
     /**
      * @var array HTML attributes for the link in a sorter container tag which are passed to [[Sort::link()]].
-     *
      * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $linkOptions = [];
+    public array $linkOptions = [];
 
     /**
      * Initializes the sorter.
+     *
+     * @throws \Yiisoft\Factory\Exceptions\InvalidConfigException
      */
     public function init(): void
     {
@@ -50,14 +50,14 @@ class LinkSorter extends Widget
         }
     }
 
-    public function sort(Sort $sort): self
+    public function withSort(Sort $sort): self
     {
         $this->sort = $sort;
 
         return $this;
     }
 
-    public function attributes(array $attributes): self
+    public function withAttributes(array $attributes): self
     {
         $this->attributes = $attributes;
 

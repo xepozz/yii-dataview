@@ -1,11 +1,6 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
-namespace Yiisoft\Yii\DataView\Tests\Coolumns;
+namespace Yiisoft\Yii\DataView\Tests\Columns;
 
 use Yiisoft\Data\Reader\Iterable\IterableDataReader;
 use Yiisoft\Html\Html;
@@ -23,7 +18,7 @@ class CheckboxColumnTest extends TestCase
      * @param string $name
      * @param string $expectedPart
      */
-    public function testInputName(string $name, string $expectedPart)
+    public function testInputName(string $name, string $expectedPart): void
     {
         $column = CheckboxColumn::widget()
             ->withName($name)
@@ -31,7 +26,7 @@ class CheckboxColumnTest extends TestCase
         $this->assertStringContainsString($expectedPart, $column->renderHeaderCell());
     }
 
-    public function inputName()
+    public function inputName(): array
     {
         return [
             ['selection', 'name="selection_all"'],
@@ -43,9 +38,10 @@ class CheckboxColumnTest extends TestCase
         ];
     }
 
-    public function testInputValue()
+    public function testInputValue(): void
     {
-        $column = CheckboxColumn::widget()->withGrid($this->getGrid());
+        $column = CheckboxColumn::widget()
+            ->withGrid($this->getGrid());
         $this->assertStringContainsString('value="1"', $column->renderDataCell([], 1, 0));
         $this->assertStringContainsString('value="42"', $column->renderDataCell([], 42, 0));
         $this->assertStringContainsString('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
@@ -78,11 +74,11 @@ class CheckboxColumnTest extends TestCase
         $this->assertStringContainsString('value="43"', $column->renderDataCell([], 1, 0));
     }
 
-    public function testContent()
+    public function testContent(): void
     {
         $column = CheckboxColumn::widget()
             ->withContent(
-                function ($model, $key, $index, $column) {
+                static function ($model, $key, $index, $column) {
                     return '';
                 }
             )
@@ -91,17 +87,14 @@ class CheckboxColumnTest extends TestCase
 
         $column = CheckboxColumn::widget()
             ->withContent(
-                function ($model, $key, $index, $column) {
+                static function ($model, $key, $index, $column) {
                     return Html::checkBox('checkBoxInput', false);
                 }
             )->withGrid($this->getGrid());
         $this->assertStringContainsString(Html::checkBox('checkBoxInput', false), $column->renderDataCell([], 1, 0));
     }
 
-    /**
-     * @return GridView a mock gridview
-     */
-    protected function getGrid()
+    private function getGrid(): GridView
     {
         $dataReader = new IterableDataReader([]);
 
